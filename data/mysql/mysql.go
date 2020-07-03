@@ -64,3 +64,8 @@ func Instance() (contract.RepoManager, error) {
 func (c *DBManager) Ping() contract.PingRepo {
 	return nil
 }
+
+//User returns a session to use cassadra querys
+func (c *DBManager) User() contract.UserRepo {
+	return newUserRepo(c.db)
+}
