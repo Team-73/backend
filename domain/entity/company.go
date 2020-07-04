@@ -25,7 +25,7 @@ type Company struct {
 type Address struct {
 	Country        string `json:"country"`
 	Street         string `json:"street"`
-	Number         int64  `json:"number"`
+	Number         string `json:"number"`
 	Complement     string `json:"complement"`
 	ZipCode        int64  `json:"zip_code"`
 	Neighborhood   string `json:"neighborhood"`

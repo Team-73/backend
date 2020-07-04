@@ -25,7 +25,7 @@ const queryBusinessSelectBase = `
 					SELECT 	b.id,
 									b.name
 								
-					FROM 		tab_business 		b 
+					FROM 		tab_company_business 		b 
 					`
 
 func (s *businessRepo) parseBusinessSet(rows *sql.Rows) (businesss []entity.Business, err error) {
@@ -119,7 +119,7 @@ func (s *businessRepo) GetBusinessByID(id int64) (*entity.Business, *resterrors.
 func (s *businessRepo) Create(business entity.Business) (int64, *resterrors.RestErr) {
 
 	query := `
-		INSERT INTO tab_business (
+		INSERT INTO tab_company_business (
 			name) VALUES
 		(?);
 		`
@@ -154,7 +154,7 @@ func (s *businessRepo) Create(business entity.Business) (int64, *resterrors.Rest
 func (s *businessRepo) Update(business entity.Business) (*entity.Business, *resterrors.RestErr) {
 
 	query := `
-		UPDATE tab_business
+		UPDATE tab_company_business
 			SET	name 												= ?
 			
 		WHERE id	= ?;
@@ -184,7 +184,7 @@ func (s *businessRepo) Update(business entity.Business) (*entity.Business, *rest
 func (s *businessRepo) Delete(id int64) *resterrors.RestErr {
 
 	query := `
-		DELETE FROM tab_business
+		DELETE FROM tab_company_business
 		WHERE 	id			= ?;
 	`
 

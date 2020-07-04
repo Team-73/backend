@@ -25,7 +25,7 @@ const queryCategorySelectBase = `
 					SELECT 	c.id,
 									c.name
 								
-					FROM 		tab_category 		c 
+					FROM 		tab_product_category 		c 
 					`
 
 func (s *categoryRepo) parseCategorySet(rows *sql.Rows) (categorys []entity.Category, err error) {
@@ -119,7 +119,7 @@ func (s *categoryRepo) GetCategoryByID(id int64) (*entity.Category, *resterrors.
 func (s *categoryRepo) Create(category entity.Category) (int64, *resterrors.RestErr) {
 
 	query := `
-		INSERT INTO tab_category (
+		INSERT INTO tab_product_category (
 			name) VALUES
 		(?);
 		`
@@ -154,7 +154,7 @@ func (s *categoryRepo) Create(category entity.Category) (int64, *resterrors.Rest
 func (s *categoryRepo) Update(category entity.Category) (*entity.Category, *resterrors.RestErr) {
 
 	query := `
-		UPDATE tab_category
+		UPDATE tab_product_category
 			SET	name 												= ?
 			
 		WHERE id	= ?;
@@ -184,7 +184,7 @@ func (s *categoryRepo) Update(category entity.Category) (*entity.Category, *rest
 func (s *categoryRepo) Delete(id int64) *resterrors.RestErr {
 
 	query := `
-		DELETE FROM tab_category
+		DELETE FROM tab_product_category
 		WHERE 	id			= ?;
 	`
 
