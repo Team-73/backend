@@ -19,7 +19,7 @@ services:
       - app-network
   
   db:
-    container_name: backend-db
+    container_name: chefia-db
     image: mysql:5.7
     #this command is important to mysql to run OK
     command: --innodb-use-native-aio=0
@@ -31,7 +31,7 @@ services:
       - ./.docker/dbdata:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=users_db
+      - MYSQL_DATABASE=chefia_db
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
     networks:

@@ -9,8 +9,6 @@ import (
 	"github.com/diegoclair/go_utils-lib/resterrors"
 )
 
-/* Here we have the entire business logic*/
-
 type userService struct {
 	svc *Service
 }
@@ -22,12 +20,22 @@ func newUserService(svc *Service) contract.UserService {
 	}
 }
 
-func (s *userService) GetUser(userID int64) (*entity.User, *resterrors.RestErr) {
+func (s *userService) GetUsers() (*[]entity.User, *resterrors.RestErr) {
+
+	users, err := s.svc.db.User().GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (s *userService) GetUserByID(userID int64) (*entity.User, *resterrors.RestErr) {
 	user := &entity.User{
 		ID: userID,
 	}
 
-	user, err := s.svc.db.User().GetByID(userID)
+	user, err := s.svc.db.User().GetUserByID(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +62,7 @@ func (s *userService) UpdateUser(user entity.User) (*entity.User, *resterrors.Re
 
 	// To not update with "" others fields that we don't send in the request and to return  this others fields,
 	// like the created_at in the response, if we don't do this, the field created_at, will be show with the value = ""
-	currentUser, err := s.GetUser(user.ID)
+	currentUser, err := s.GetUserByID(user.ID)
 	if err != nil {
 		return nil, err
 	}

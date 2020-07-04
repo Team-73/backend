@@ -17,6 +17,8 @@ func New(db contract.RepoManager) *Service {
 
 //Manager defines the services aggregator interface
 type Manager interface {
+	CategoryService(svc *Service) contract.CategoryService
+	ProductService(svc *Service) contract.ProductService
 	UserService(svc *Service) contract.UserService
 }
 
@@ -27,6 +29,14 @@ type serviceManager struct {
 // NewServiceManager return a service manager instance
 func NewServiceManager() Manager {
 	return &serviceManager{}
+}
+
+func (s *serviceManager) CategoryService(svc *Service) contract.CategoryService {
+	return newCategoryService(svc)
+}
+
+func (s *serviceManager) ProductService(svc *Service) contract.ProductService {
+	return newProductService(svc)
 }
 
 func (s *serviceManager) UserService(svc *Service) contract.UserService {

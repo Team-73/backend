@@ -11,9 +11,28 @@ type PingService interface {
 
 // UserService holds a user service operations
 type UserService interface {
-	GetUser(userID int64) (*entity.User, *resterrors.RestErr)
+	GetUsers() (*[]entity.User, *resterrors.RestErr)
+	GetUserByID(userID int64) (*entity.User, *resterrors.RestErr)
 	CreateUser(entity.User) (int64, *resterrors.RestErr)
 	UpdateUser(entity.User) (*entity.User, *resterrors.RestErr)
 	DeleteUser(userID int64) *resterrors.RestErr
 	LoginUser(request entity.LoginRequest) (*entity.User, *resterrors.RestErr)
+}
+
+// ProductService holds a product service operations
+type ProductService interface {
+	GetProducts() (*[]entity.Product, *resterrors.RestErr)
+	GetProductByID(productID int64) (*entity.Product, *resterrors.RestErr)
+	CreateProduct(entity.Product) (int64, *resterrors.RestErr)
+	UpdateProduct(entity.Product) (*entity.Product, *resterrors.RestErr)
+	DeleteProduct(productID int64) *resterrors.RestErr
+}
+
+// CategoryService holds a category service operations
+type CategoryService interface {
+	GetCategories() (*[]entity.Category, *resterrors.RestErr)
+	GetCategoryByID(categoryID int64) (*entity.Category, *resterrors.RestErr)
+	CreateCategory(entity.Category) (int64, *resterrors.RestErr)
+	UpdateCategory(entity.Category) (*entity.Category, *resterrors.RestErr)
+	DeleteCategory(categoryID int64) *resterrors.RestErr
 }

@@ -32,8 +32,8 @@ func NewController(userService contract.UserService) *Controller {
 	return instance
 }
 
-// handleGetUser to handle a get user request
-func (s *Controller) handleGetUser(c *gin.Context) {
+// handleGetUserByID to handle a get user request
+func (s *Controller) handleGetUserByID(c *gin.Context) {
 
 	userID, errID := s.getIDParameter(c.Param("id"))
 	if errID != nil {
@@ -41,13 +41,33 @@ func (s *Controller) handleGetUser(c *gin.Context) {
 		return
 	}
 
-	user, getErr := s.userService.GetUser(userID)
+	user, getErr := s.userService.GetUserByID(userID)
 	if getErr != nil {
 		c.JSON(getErr.StatusCode, getErr)
 		return
 	}
 
 	vmResponse := userStructToViewmodelResponse(*user)
+
+	c.JSON(http.StatusOK, vmResponse)
+}
+
+// handleGetUsers to handle a get user request
+func (s *Controller) handleGetUsers(c *gin.Context) {
+
+	result, getErr := s.userService.GetUsers()
+	if getErr != nil {
+		c.JSON(getErr.StatusCode, getErr)
+		return
+	}
+
+	if len(*result) == 0 {
+		notFound := resterrors.NewNotFoundError("No records find with the parameters")
+		c.JSON(http.StatusOK, notFound)
+		return
+	}
+
+	vmResponse := userListStructToViewmodelResponse(*result)
 
 	c.JSON(http.StatusOK, vmResponse)
 }
@@ -132,13 +152,13 @@ func (s *Controller) handleLogin(c *gin.Context) {
 		return
 	}
 
-	resUser, loginErr := s.userService.LoginUser(credentials)
+	_, loginErr := s.userService.LoginUser(credentials)
 	if loginErr != nil {
 		c.JSON(loginErr.StatusCode, loginErr)
 		return
 	}
 
-	c.JSON(http.StatusOK, resUser)
+	c.JSON(http.StatusOK, gin.H{"status": "Ok"})
 }
 
 func (s *Controller) getIDParameter(userParamID string) (int64, *resterrors.RestErr) {
@@ -156,6 +176,7 @@ func userStructToViewmodelResponse(user entity.User) (vmUser viewmodel.User) {
 	vmUser.Name = user.Name
 	vmUser.Email = user.Email
 	vmUser.DocumentNumber = user.DocumentNumber
+	vmUser.CountryCode = user.CountryCode
 	vmUser.AreaCode = user.AreaCode
 	vmUser.PhoneNumber = user.PhoneNumber
 	vmUser.Birthdate = user.Birthdate
@@ -164,4 +185,27 @@ func userStructToViewmodelResponse(user entity.User) (vmUser viewmodel.User) {
 	vmUser.Active = user.Active
 
 	return vmUser
+}
+
+func userListStructToViewmodelResponse(users []entity.User) (vmUsers []viewmodel.User) {
+
+	var vmUser viewmodel.User
+
+	for i := 0; i < len(users); i++ {
+		vmUser.ID = users[i].ID
+		vmUser.Name = users[i].Name
+		vmUser.Email = users[i].Email
+		vmUser.DocumentNumber = users[i].DocumentNumber
+		vmUser.CountryCode = users[i].CountryCode
+		vmUser.AreaCode = users[i].AreaCode
+		vmUser.PhoneNumber = users[i].PhoneNumber
+		vmUser.Birthdate = users[i].Birthdate
+		vmUser.Gender = users[i].Gender
+		vmUser.Revenue = users[i].Revenue
+		vmUser.Active = users[i].Active
+
+		vmUsers = append(vmUsers, vmUser)
+	}
+
+	return vmUsers
 }

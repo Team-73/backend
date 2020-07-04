@@ -1,6 +1,7 @@
 package pingroute
 
 import (
+	"net/http"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +26,7 @@ func NewController() *Controller {
 
 // handlePing - handle a Ping request
 func (s *Controller) handlePing(c *gin.Context) {
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 	})
 }

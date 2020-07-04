@@ -60,9 +60,19 @@ func Instance() (contract.RepoManager, error) {
 	return instance, nil
 }
 
+//Category returns a session to use cassadra querys
+func (c *DBManager) Category() contract.CategoryRepo {
+	return newCategoryRepo(c.db)
+}
+
 //Ping returns a session to use cassadra querys
 func (c *DBManager) Ping() contract.PingRepo {
 	return nil
+}
+
+//Product returns a session to use cassadra querys
+func (c *DBManager) Product() contract.ProductRepo {
+	return newProductRepo(c.db)
 }
 
 //User returns a session to use cassadra querys

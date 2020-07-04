@@ -4,21 +4,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// PingRouter holds the ping handlers
-type PingRouter struct {
+// Route holds the ping handlers
+type Route struct {
 	ctrl   *Controller
 	router *gin.Engine
 }
 
-// NewRouter returns a new PingRouter instance
-func NewRouter(ctrl *Controller, router *gin.Engine) *PingRouter {
-	return &PingRouter{
+// NewRoute returns a new Route instance
+func NewRoute(ctrl *Controller, router *gin.Engine) *Route {
+	return &Route{
 		ctrl:   ctrl,
 		router: router,
 	}
 }
 
 //RegisterRoutes is a routers map of ping requests
-func (r *PingRouter) RegisterRoutes() {
+func (r *Route) RegisterRoutes() {
 	r.router.GET("/ping", r.ctrl.handlePing)
 }

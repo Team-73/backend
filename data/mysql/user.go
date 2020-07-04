@@ -21,12 +21,13 @@ func newUserRepo(db *sql.DB) *userRepo {
 	}
 }
 
-const querySelectBase = `
+const queryUserSelectBase = `
 					SELECT 	u.id,
 									u.name,
 									u.email,
 									u.password,
 									u.document_number,
+									u.country_code,
 									u.area_code,
 									u.phone_number,
 									u.birthdate,
@@ -34,7 +35,7 @@ const querySelectBase = `
 									u.revenue,
 									u.active
 
-					FROM 		users 		u 
+					FROM 		tab_user 		u 
 					`
 
 func (s *userRepo) parseUserSet(rows *sql.Rows) (users []entity.User, err error) {
@@ -58,6 +59,7 @@ func (s *userRepo) parseUser(row scanner) (user entity.User, err error) {
 		&user.Email,
 		&user.Password,
 		&user.DocumentNumber,
+		&user.CountryCode,
 		&user.AreaCode,
 		&user.PhoneNumber,
 		&user.Birthdate,
@@ -73,29 +75,60 @@ func (s *userRepo) parseUser(row scanner) (user entity.User, err error) {
 	return user, nil
 }
 
-//GetByID - get a user by ID
-func (s *userRepo) GetByID(id int64) (*entity.User, *resterrors.RestErr) {
+//GetUsers - return a list of users
+func (s *userRepo) GetUsers() (*[]entity.User, *resterrors.RestErr) {
 
-	query := querySelectBase + `
+	query := queryUserSelectBase
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		errorCode := "Error 0024: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetUserByID", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+	defer stmt.Close()
+
+	var users []entity.User
+
+	rows, err := stmt.Query()
+	if err != nil {
+		errorCode := "Error 0025: "
+		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetUsers", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+	defer rows.Close()
+
+	users, err = s.parseUserSet(rows)
+	if err != nil {
+		errorCode := "Error 0026: "
+		log.Println(fmt.Sprintf("%sError when trying to parse result in parseUserSet", errorCode), err)
+		return nil, mysqlutils.HandleMySQLError(errorCode, err)
+	}
+
+	return &users, nil
+}
+
+//GetUserByID - get a user by ID
+func (s *userRepo) GetUserByID(id int64) (*entity.User, *resterrors.RestErr) {
+
+	query := queryUserSelectBase + `
 		WHERE 	u.id 		= ?;`
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
 		errorCode := "Error 0001: "
-		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetByID", errorCode), err)
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetUserByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 	defer stmt.Close()
 
 	var user entity.User
 
-	// If we use result, err := stmt.Query(user.ID) instead QueryRow, then we need to close the connection defer result.Close() and check if we have some err
-	// to get only one register on database, is better to use queryRow
 	result := stmt.QueryRow(id)
 	user, err = s.parseUser(result)
 	if err != nil {
 		errorCode := "Error 0002: "
-		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetByID", errorCode), err)
+		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetUserByID", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
@@ -106,38 +139,48 @@ func (s *userRepo) GetByID(id int64) (*entity.User, *resterrors.RestErr) {
 func (s *userRepo) Create(user entity.User) (int64, *resterrors.RestErr) {
 
 	query := `
-		INSERT INTO users (
+		INSERT INTO tab_user (
 			name,
 			email,
 			password,
 			document_number,
+			country_code,
 			area_code,
 			phone_number,
 			birthdate,
-			gender) VALUES	
-		(?, ?, ?, ?, ?, ?, ?, ?);
+			gender,
+			revenue) VALUES	
+		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 		`
 
-	// When you use prepare, you not already execute the query on database, it's like to validate the query first
-	// its is (more fast) than when you get an error directly on your database
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0006: "
+		errorCode := "Error 0003: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Create user", errorCode), err)
 		return 0, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 	defer stmt.Close()
 
-	insertResult, err := stmt.Exec(user.Name, user.Email, user.Password, user.DocumentNumber, user.AreaCode, user.PhoneNumber, user.Birthdate, user.Gender)
+	insertResult, err := stmt.Exec(
+		user.Name,
+		user.Email,
+		user.Password,
+		user.DocumentNumber,
+		user.CountryCode,
+		user.AreaCode,
+		user.PhoneNumber,
+		user.Birthdate,
+		user.Gender,
+		user.Revenue)
 	if err != nil {
-		errorCode := "Error 0007: "
+		errorCode := "Error 0004: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Create user", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
 	userID, err := insertResult.LastInsertId()
 	if err != nil {
-		errorCode := "Error 0008: "
+		errorCode := "Error 0005: "
 		log.Println(fmt.Sprintf("%sError when trying to get LastInsertId in the Create user", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -149,9 +192,10 @@ func (s *userRepo) Create(user entity.User) (int64, *resterrors.RestErr) {
 func (s *userRepo) Update(user entity.User) (*entity.User, *resterrors.RestErr) {
 
 	query := `
-		UPDATE users
+		UPDATE tab_user
 			SET	name 					= ?,
 					email					= ?,
+					country_code	= ?,
 					area_code			= ?,
 					phone_number	= ?
 			
@@ -160,15 +204,21 @@ func (s *userRepo) Update(user entity.User) (*entity.User, *resterrors.RestErr) 
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0009: "
+		errorCode := "Error 0006: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Update user", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user.Name, user.Email, user.AreaCode, user.PhoneNumber, user.ID)
+	_, err = stmt.Exec(
+		user.Name,
+		user.Email,
+		user.CountryCode,
+		user.AreaCode,
+		user.PhoneNumber,
+		user.ID)
 	if err != nil {
-		errorCode := "Error 0010: "
+		errorCode := "Error 0007: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Update user", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -180,13 +230,13 @@ func (s *userRepo) Update(user entity.User) (*entity.User, *resterrors.RestErr) 
 func (s *userRepo) Delete(id int64) *resterrors.RestErr {
 
 	query := `
-		DELETE FROM users
+		DELETE FROM tab_user
 		WHERE 	id			= ?;
 	`
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0011: "
+		errorCode := "Error 0008: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Delete user", errorCode), err)
 		return resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -194,7 +244,7 @@ func (s *userRepo) Delete(id int64) *resterrors.RestErr {
 
 	_, err = stmt.Exec(id)
 	if err != nil {
-		errorCode := "Error 0012: "
+		errorCode := "Error 0009: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Delete user", errorCode), err)
 		return mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -205,7 +255,7 @@ func (s *userRepo) Delete(id int64) *resterrors.RestErr {
 //GetByEmailAndPassword - get a user by their email and password
 func (s *userRepo) GetByEmailAndPassword(userRequest entity.LoginRequest) (*entity.User, *resterrors.RestErr) {
 
-	query := querySelectBase + `
+	query := queryUserSelectBase + `
 	
 		WHERE 	u.email 		= ?
 		  AND   u.password	= ?
@@ -213,20 +263,18 @@ func (s *userRepo) GetByEmailAndPassword(userRequest entity.LoginRequest) (*enti
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0013: "
+		errorCode := "Error 0010: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetByEmailAndPassword", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 	defer stmt.Close()
 
-	// If we use result, err := stmt.Query(user.ID) instead QueryRow, then we need to close the connection defer result.Close() and check if we have some err
-	// to get only one register on database, is better to use queryRow
 	result := stmt.QueryRow(userRequest.Email, userRequest.Password)
 
 	var user entity.User
 	user, err = s.parseUser(result)
 	if err != nil {
-		errorCode := "Error 0014: "
+		errorCode := "Error 0011: "
 		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetByDocumentNumberAndPassword", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
