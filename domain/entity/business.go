@@ -6,17 +6,17 @@ import (
 	"github.com/diegoclair/go_utils-lib/resterrors"
 )
 
-// Category entity
-type Category struct {
+// Business entity
+type Business struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 }
 
 // Validate to validate a user data
-func (category *Category) Validate() *resterrors.RestErr {
+func (business *Business) Validate() *resterrors.RestErr {
 
-	category.Name = strings.TrimSpace(category.Name)
-	if category.Name == "" {
+	business.Name = strings.TrimSpace(business.Name)
+	if business.Name == "" {
 		return resterrors.NewBadRequestError("Name is invalid")
 	}
 

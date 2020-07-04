@@ -70,9 +70,16 @@ func (s *productRepo) parseProduct(row scanner) (product entity.Product, err err
 }
 
 //GetProducts - return a list os products
-func (s *productRepo) GetProducts() (*[]entity.Product, *resterrors.RestErr) {
+func (s *productRepo) GetProducts(categoryID int64) (*[]entity.Product, *resterrors.RestErr) {
 
+	var params = []interface{}{}
 	query := queryProductSelectBase
+	if categoryID > 0 {
+		query += `
+			WHERE p.category_id = ?
+		`
+		params = append(params, categoryID)
+	}
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
@@ -84,7 +91,7 @@ func (s *productRepo) GetProducts() (*[]entity.Product, *resterrors.RestErr) {
 
 	var products []entity.Product
 
-	rows, err := stmt.Query()
+	rows, err := stmt.Query(params...)
 	if err != nil {
 		errorCode := "Error 0022: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetProducts", errorCode), err)

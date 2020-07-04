@@ -19,9 +19,9 @@ func newProductService(svc *Service) contract.ProductService {
 	}
 }
 
-func (s *productService) GetProducts() (*[]entity.Product, *resterrors.RestErr) {
+func (s *productService) GetProducts(categoryID int64) (*[]entity.Product, *resterrors.RestErr) {
 
-	products, err := s.svc.db.Product().GetProducts()
+	products, err := s.svc.db.Product().GetProducts(categoryID)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,6 @@ func (s *productService) CreateProduct(product entity.Product) (int64, *resterro
 
 func (s *productService) UpdateProduct(product entity.Product) (*entity.Product, *resterrors.RestErr) {
 
-	// To not update with "" others fields that we don't send in the request and to return  this others fields,
-	// like the created_at in the response, if we don't do this, the field created_at, will be show with the value = ""
 	currentProduct, err := s.GetProductByID(product.ID)
 	if err != nil {
 		return nil, err

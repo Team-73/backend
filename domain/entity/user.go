@@ -25,7 +25,7 @@ type User struct {
 // Validate to validate a user data
 func (user *User) Validate() *resterrors.RestErr {
 
-	user.Name = strings.TrimSpace(strings.ToLower(user.Name))
+	user.Name = strings.TrimSpace(user.Name)
 	if user.Name == "" {
 		return resterrors.NewBadRequestError("Name is invalid")
 	}
@@ -35,17 +35,17 @@ func (user *User) Validate() *resterrors.RestErr {
 		return resterrors.NewBadRequestError("Email address is invalid")
 	}
 
-	user.CountryCode = strings.TrimSpace(strings.ToLower(user.CountryCode))
+	user.CountryCode = strings.TrimSpace(user.CountryCode)
 	if user.CountryCode == "" {
 		return resterrors.NewBadRequestError("Country code is invalid")
 	}
 
-	user.AreaCode = strings.TrimSpace(strings.ToLower(user.AreaCode))
+	user.AreaCode = strings.TrimSpace(user.AreaCode)
 	if user.AreaCode == "" {
 		return resterrors.NewBadRequestError("Area code is invalid")
 	}
 
-	user.PhoneNumber = strings.TrimSpace(strings.ToLower(user.PhoneNumber))
+	user.PhoneNumber = strings.TrimSpace(user.PhoneNumber)
 	if user.PhoneNumber == "" {
 		return resterrors.NewBadRequestError("Phone number is invalid")
 	}

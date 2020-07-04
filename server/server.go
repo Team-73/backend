@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/Team-73/backend/server/routes/businessroute"
 	"github.com/Team-73/backend/server/routes/categoryroute"
 	"github.com/Team-73/backend/server/routes/pingroute"
 	"github.com/Team-73/backend/server/routes/productroute"
@@ -14,12 +15,12 @@ type controller struct {
 	userController     *userroute.Controller
 	productController  *productroute.Controller
 	categoryController *categoryroute.Controller
+	businessController *businessroute.Controller
 }
 
 //InitServer to initialize the server
 func InitServer(svc *service.Service) *gin.Engine {
 	svm := service.NewServiceManager()
-	_ = svm //remover essa linha quando utilizar o svm
 	srv := gin.Default()
 
 	return setupRoutes(srv, &controller{
@@ -27,6 +28,7 @@ func InitServer(svc *service.Service) *gin.Engine {
 		userController:     userroute.NewController(svm.UserService(svc)),
 		productController:  productroute.NewController(svm.ProductService(svc)),
 		categoryController: categoryroute.NewController(svm.CategoryService(svc)),
+		businessController: businessroute.NewController(svm.BusinessService(svc)),
 	})
 }
 
@@ -37,6 +39,7 @@ func setupRoutes(srv *gin.Engine, s *controller) *gin.Engine {
 	userroute.NewRoute(s.userController, srv).RegisterRoutes()
 	productroute.NewRoute(s.productController, srv).RegisterRoutes()
 	categoryroute.NewRoute(s.categoryController, srv).RegisterRoutes()
+	businessroute.NewRoute(s.businessController, srv).RegisterRoutes()
 
 	return srv
 }

@@ -1,6 +1,7 @@
 package productroute
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -34,7 +35,22 @@ func NewController(productService contract.ProductService) *Controller {
 // handleGetProducts to handle a get product request
 func (s *Controller) handleGetProducts(c *gin.Context) {
 
-	result, getErr := s.productService.GetProducts()
+	var categoryID int64 = 0
+	var err error
+
+	category := c.Query("category")
+	if category != "" {
+
+		categoryID, err = strconv.ParseInt(c.Query("category"), 10, 64)
+		if err != nil {
+			log.Println(err)
+			restErr := resterrors.NewBadRequestError("Unable to parse category value")
+			c.JSON(restErr.StatusCode, restErr)
+			return
+		}
+	}
+
+	result, getErr := s.productService.GetProducts(categoryID)
 	if getErr != nil {
 		c.JSON(getErr.StatusCode, getErr)
 		return

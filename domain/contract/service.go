@@ -21,7 +21,7 @@ type UserService interface {
 
 // ProductService holds a product service operations
 type ProductService interface {
-	GetProducts() (*[]entity.Product, *resterrors.RestErr)
+	GetProducts(categoryID int64) (*[]entity.Product, *resterrors.RestErr)
 	GetProductByID(productID int64) (*entity.Product, *resterrors.RestErr)
 	CreateProduct(entity.Product) (int64, *resterrors.RestErr)
 	UpdateProduct(entity.Product) (*entity.Product, *resterrors.RestErr)
@@ -35,4 +35,13 @@ type CategoryService interface {
 	CreateCategory(entity.Category) (int64, *resterrors.RestErr)
 	UpdateCategory(entity.Category) (*entity.Category, *resterrors.RestErr)
 	DeleteCategory(categoryID int64) *resterrors.RestErr
+}
+
+// BusinessService holds a business service operations
+type BusinessService interface {
+	GetBusinesses() (*[]entity.Business, *resterrors.RestErr)
+	GetBusinessByID(businessID int64) (*entity.Business, *resterrors.RestErr)
+	CreateBusiness(entity.Business) (int64, *resterrors.RestErr)
+	UpdateBusiness(entity.Business) (*entity.Business, *resterrors.RestErr)
+	DeleteBusiness(businessID int64) *resterrors.RestErr
 }
