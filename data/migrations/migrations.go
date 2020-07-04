@@ -87,15 +87,25 @@ var (
 				document_number VARCHAR(50) NULL,
 				website VARCHAR(3000) NULL,
 				business_id INT(11) NOT NULL,
-				product_image_url VARCHAR(3000) NULL,
-				time_for_preparing_minutes INT(11) NULL,
+				country VARCHAR(100) NULL DEFAULT 'Brazil',
+				street VARCHAR(3000) NULL,
+				street_number INT(11) NULL,
+				complement VARCHAR(100) NULL,
+				zip_code INT(11) NULL,
+				neighborhood VARCHAR(100) NULL,
+				city VARCHAR(100) NULL,
+				federative_unit CHAR(2) NULL,
+				instagram_url VARCHAR(3000) NULL DEFAULT 'https://www.instagram.com/ambev/',
+				facebook_url VARCHAR(3000) NULL DEFAULT 'https://www.facebook.com/cervejariaambev/',
+				linkedin_url VARCHAR(3000) NULL DEFAULT 'https://www.linkedin.com/company/ambev/',
+				twitter_url VARCHAR(3000) NULL DEFAULT 'https://twitter.com/cervejariaambev',
 
 				PRIMARY KEY (id),
-				INDEX fk_tab_product_tab_category_idx (id ASC),
+				INDEX fk_tab_company_tab_business_idx (id ASC),
 				UNIQUE INDEX ID_UNIQUE (id ASC),
-				CONSTRAINT fk_product_category
-					FOREIGN KEY (category_id)
-					REFERENCES chefia_db.tab_category (id)
+				CONSTRAINT fk_company_business
+					FOREIGN KEY (business_id)
+					REFERENCES chefia_db.tab_business (id)
 					ON DELETE NO ACTION
 					ON UPDATE NO ACTION
 			) ENGINE=InnoDB CHARACTER SET=utf8;`,

@@ -10,6 +10,7 @@ type RepoManager interface {
 	Ping() PingRepo
 	Business() BusinessRepo
 	Category() CategoryRepo
+	Company() CompanyRepo
 	Product() ProductRepo
 	User() UserRepo
 }
@@ -33,6 +34,15 @@ type CategoryRepo interface {
 	Create(entity.Category) (int64, *resterrors.RestErr)
 	Update(entity.Category) (*entity.Category, *resterrors.RestErr)
 	Delete(categoryID int64) *resterrors.RestErr
+}
+
+// CompanyRepo defines the data set for a company
+type CompanyRepo interface {
+	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
+	GetCompanyByID(companyID int64) (*entity.Company, *resterrors.RestErr)
+	Create(entity.Company) (int64, *resterrors.RestErr)
+	Update(entity.Company) (*entity.Company, *resterrors.RestErr)
+	Delete(companyID int64) *resterrors.RestErr
 }
 
 // ProductRepo defines the data set for a product

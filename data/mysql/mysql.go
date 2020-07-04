@@ -75,6 +75,11 @@ func (c *DBManager) Category() contract.CategoryRepo {
 	return newCategoryRepo(c.db)
 }
 
+//Company returns a session to use mysql querys
+func (c *DBManager) Company() contract.CompanyRepo {
+	return newCompanyRepo(c.db)
+}
+
 //Product returns a session to use mysql querys
 func (c *DBManager) Product() contract.ProductRepo {
 	return newProductRepo(c.db)

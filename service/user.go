@@ -60,8 +60,6 @@ func (s *userService) CreateUser(user entity.User) (int64, *resterrors.RestErr) 
 
 func (s *userService) UpdateUser(user entity.User) (*entity.User, *resterrors.RestErr) {
 
-	// To not update with "" others fields that we don't send in the request and to return  this others fields,
-	// like the created_at in the response, if we don't do this, the field created_at, will be show with the value = ""
 	currentUser, err := s.GetUserByID(user.ID)
 	if err != nil {
 		return nil, err
@@ -73,6 +71,10 @@ func (s *userService) UpdateUser(user entity.User) (*entity.User, *resterrors.Re
 
 	if user.Email != "" {
 		currentUser.Email = strings.TrimSpace(user.Email)
+	}
+
+	if user.CountryCode != "" {
+		currentUser.CountryCode = strings.TrimSpace(user.CountryCode)
 	}
 
 	if user.AreaCode != "" {

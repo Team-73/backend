@@ -45,3 +45,12 @@ type BusinessService interface {
 	UpdateBusiness(entity.Business) (*entity.Business, *resterrors.RestErr)
 	DeleteBusiness(businessID int64) *resterrors.RestErr
 }
+
+// CompanyService holds a user service operations
+type CompanyService interface {
+	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
+	GetCompanyByID(userID int64) (*entity.Company, *resterrors.RestErr)
+	CreateCompany(entity.Company) (int64, *resterrors.RestErr)
+	UpdateCompany(entity.Company) (*entity.Company, *resterrors.RestErr)
+	DeleteCompany(userID int64) *resterrors.RestErr
+}

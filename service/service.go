@@ -19,6 +19,7 @@ func New(db contract.RepoManager) *Service {
 type Manager interface {
 	BusinessService(svc *Service) contract.BusinessService
 	CategoryService(svc *Service) contract.CategoryService
+	CompanyService(svc *Service) contract.CompanyService
 	ProductService(svc *Service) contract.ProductService
 	UserService(svc *Service) contract.UserService
 }
@@ -38,6 +39,10 @@ func (s *serviceManager) BusinessService(svc *Service) contract.BusinessService 
 
 func (s *serviceManager) CategoryService(svc *Service) contract.CategoryService {
 	return newCategoryService(svc)
+}
+
+func (s *serviceManager) CompanyService(svc *Service) contract.CompanyService {
+	return newCompanyService(svc)
 }
 
 func (s *serviceManager) ProductService(svc *Service) contract.ProductService {
