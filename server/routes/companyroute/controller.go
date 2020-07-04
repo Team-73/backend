@@ -1,6 +1,7 @@
 package companyroute
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -34,19 +35,30 @@ func NewController(companyService contract.CompanyService) *Controller {
 // handleGetCompanyByID to handle a get company request
 func (s *Controller) handleGetCompanyByID(c *gin.Context) {
 
-	companyID, errID := s.getIDParameter(c.Param("id"))
-	if errID != nil {
-		c.JSON(errID.StatusCode, errID)
-		return
+	var companyID int64 = 0
+	var err error
+
+	company := c.Query("company")
+	if company != "" {
+
+		companyID, err = strconv.ParseInt(c.Query("company"), 10, 64)
+		if err != nil {
+			log.Println(err)
+			restErr := resterrors.NewBadRequestError("Unable to parse company value")
+			c.JSON(restErr.StatusCode, restErr)
+			return
+		}
+	} else {
+		companyID = 0
 	}
 
-	company, getErr := s.companyService.GetCompanyByID(companyID)
+	result, getErr := s.companyService.GetCompanyByID(companyID)
 	if getErr != nil {
 		c.JSON(getErr.StatusCode, getErr)
 		return
 	}
 
-	c.JSON(http.StatusOK, company)
+	c.JSON(http.StatusOK, result)
 }
 
 // handleGetCompanies to handle a get company request

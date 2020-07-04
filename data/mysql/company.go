@@ -198,6 +198,7 @@ func (s *companyRepo) Create(company entity.Company) (int64, *resterrors.RestErr
 		company.DocumentNumber,
 		company.Website,
 		company.BusinessID,
+		company.Address.Country,
 		company.Address.Street,
 		company.Address.Number,
 		company.Address.Complement,
