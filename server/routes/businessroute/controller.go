@@ -1,6 +1,7 @@
 package businessroute
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -74,6 +75,7 @@ func (s *Controller) handleCreateBusiness(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&business)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -94,6 +96,7 @@ func (s *Controller) handleUpdateBusiness(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&business)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -137,7 +140,7 @@ func (s *Controller) handleDeleteBusiness(c *gin.Context) {
 func (s *Controller) getIDParameter(businessParamID string) (int64, *resterrors.RestErr) {
 	businessID, businessErr := strconv.ParseInt(businessParamID, 10, 64)
 	if businessErr != nil {
-		return 0, resterrors.NewBadRequestError("Business id should be a number")
+		return 0, resterrors.NewBadRequestError("Param id should be a number")
 	}
 
 	return businessID, nil

@@ -92,6 +92,7 @@ func (s *Controller) handleCreateProduct(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&product)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -112,6 +113,7 @@ func (s *Controller) handleUpdateProduct(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&product)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -155,7 +157,7 @@ func (s *Controller) handleDeleteProduct(c *gin.Context) {
 func (s *Controller) getIDParameter(productParamID string) (int64, *resterrors.RestErr) {
 	productID, productErr := strconv.ParseInt(productParamID, 10, 64)
 	if productErr != nil {
-		return 0, resterrors.NewBadRequestError("Product id should be a number")
+		return 0, resterrors.NewBadRequestError("Param id should be a number")
 	}
 
 	return productID, nil

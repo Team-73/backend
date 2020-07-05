@@ -62,7 +62,7 @@ func (s *businessRepo) GetBusinesses() (*[]entity.Business, *resterrors.RestErr)
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0027: "
+		errorCode := "Error 0001: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetBusinessByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -72,7 +72,7 @@ func (s *businessRepo) GetBusinesses() (*[]entity.Business, *resterrors.RestErr)
 
 	rows, err := stmt.Query()
 	if err != nil {
-		errorCode := "Error 0028: "
+		errorCode := "Error 0002: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetBusinesss", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -80,7 +80,7 @@ func (s *businessRepo) GetBusinesses() (*[]entity.Business, *resterrors.RestErr)
 
 	businesss, err = s.parseBusinessSet(rows)
 	if err != nil {
-		errorCode := "Error 0029: "
+		errorCode := "Error 0003: "
 		log.Println(fmt.Sprintf("%sError when trying to parse result in parseBusinessSet", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -96,7 +96,7 @@ func (s *businessRepo) GetBusinessByID(id int64) (*entity.Business, *resterrors.
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0030: "
+		errorCode := "Error 0004: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetBusinessByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -107,7 +107,7 @@ func (s *businessRepo) GetBusinessByID(id int64) (*entity.Business, *resterrors.
 	result := stmt.QueryRow(id)
 	business, err = s.parseBusiness(result)
 	if err != nil {
-		errorCode := "Error 0031: "
+		errorCode := "Error 0005: "
 		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetBusinessByID", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -126,7 +126,7 @@ func (s *businessRepo) Create(business entity.Business) (int64, *resterrors.Rest
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0032: "
+		errorCode := "Error 0006: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Create a business", errorCode), err)
 		return 0, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -135,14 +135,14 @@ func (s *businessRepo) Create(business entity.Business) (int64, *resterrors.Rest
 	insertResult, err := stmt.Exec(
 		business.Name)
 	if err != nil {
-		errorCode := "Error 0033: "
+		errorCode := "Error 0007: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Create business", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
 	businessID, err := insertResult.LastInsertId()
 	if err != nil {
-		errorCode := "Error 0034: "
+		errorCode := "Error 0008: "
 		log.Println(fmt.Sprintf("%sError when trying to get LastInsertId in the Create business", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -162,7 +162,7 @@ func (s *businessRepo) Update(business entity.Business) (*entity.Business, *rest
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0035: "
+		errorCode := "Error 0009: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Update a business", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -172,7 +172,7 @@ func (s *businessRepo) Update(business entity.Business) (*entity.Business, *rest
 		business.Name,
 		business.ID)
 	if err != nil {
-		errorCode := "Error 0036: "
+		errorCode := "Error 0010: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Update business", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -190,7 +190,7 @@ func (s *businessRepo) Delete(id int64) *resterrors.RestErr {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0037: "
+		errorCode := "Error 0011: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Delete business", errorCode), err)
 		return resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -198,7 +198,7 @@ func (s *businessRepo) Delete(id int64) *resterrors.RestErr {
 
 	_, err = stmt.Exec(id)
 	if err != nil {
-		errorCode := "Error 0038: "
+		errorCode := "Error 0012: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Delete business", errorCode), err)
 		return mysqlutils.HandleMySQLError(errorCode, err)
 	}

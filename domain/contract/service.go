@@ -54,3 +54,9 @@ type CompanyService interface {
 	UpdateCompany(entity.Company) (*entity.Company, *resterrors.RestErr)
 	DeleteCompany(userID int64) *resterrors.RestErr
 }
+
+// OrderService holds a user service operations
+type OrderService interface {
+	CreateOrder(entity.Order) (int64, *resterrors.RestErr)
+	GetOrderByUserID(userID int64) (*[]entity.Order, *resterrors.RestErr)
+}

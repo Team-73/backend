@@ -89,3 +89,8 @@ func (c *DBManager) Product() contract.ProductRepo {
 func (c *DBManager) User() contract.UserRepo {
 	return newUserRepo(c.db)
 }
+
+//Order returns a session to use mysql querys
+func (c *DBManager) Order() contract.OrderRepo {
+	return newOrderRepo(c.db)
+}

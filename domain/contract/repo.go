@@ -13,6 +13,7 @@ type RepoManager interface {
 	Company() CompanyRepo
 	Product() ProductRepo
 	User() UserRepo
+	Order() OrderRepo
 }
 
 // PingRepo defines the data set for a ping
@@ -62,4 +63,12 @@ type UserRepo interface {
 	Update(entity.User) (*entity.User, *resterrors.RestErr)
 	Delete(userID int64) *resterrors.RestErr
 	GetByEmailAndPassword(user entity.LoginRequest) (*entity.User, *resterrors.RestErr)
+}
+
+// OrderRepo defines the data set for a category
+type OrderRepo interface {
+	CreateOrder(entity.Order) (int64, *resterrors.RestErr)
+	CreateOrderProductAndReturnProductPrice(orderID int64, oderProduct entity.OrderProduct) (float64, *resterrors.RestErr)
+	UpdateOrder(orderID int64, order entity.Order) *resterrors.RestErr
+	GetOrderByUserID(userID int64) ([]entity.Order, *resterrors.RestErr)
 }

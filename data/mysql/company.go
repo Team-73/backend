@@ -100,7 +100,7 @@ func (s *companyRepo) GetCompanies() (*[]entity.Company, *resterrors.RestErr) {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0024: "
+		errorCode := "Error 0001: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetCompanyByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -110,7 +110,7 @@ func (s *companyRepo) GetCompanies() (*[]entity.Company, *resterrors.RestErr) {
 
 	rows, err := stmt.Query()
 	if err != nil {
-		errorCode := "Error 0025: "
+		errorCode := "Error 0002: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetCompanys", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -118,7 +118,7 @@ func (s *companyRepo) GetCompanies() (*[]entity.Company, *resterrors.RestErr) {
 
 	companies, err = s.parseCompanySet(rows)
 	if err != nil {
-		errorCode := "Error 0026: "
+		errorCode := "Error 0003: "
 		log.Println(fmt.Sprintf("%sError when trying to parse result in parseCompanySet", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -134,7 +134,7 @@ func (s *companyRepo) GetCompanyByID(id int64) (*entity.Company, *resterrors.Res
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0001: "
+		errorCode := "Error 0004: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetCompanyByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -145,7 +145,7 @@ func (s *companyRepo) GetCompanyByID(id int64) (*entity.Company, *resterrors.Res
 	result := stmt.QueryRow(id)
 	company, err = s.parseCompany(result)
 	if err != nil {
-		errorCode := "Error 0002: "
+		errorCode := "Error 0005: "
 		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetCompanyByID", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -183,7 +183,7 @@ func (s *companyRepo) Create(company entity.Company) (int64, *resterrors.RestErr
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0003: "
+		errorCode := "Error 0006: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Create company", errorCode), err)
 		return 0, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -211,14 +211,14 @@ func (s *companyRepo) Create(company entity.Company) (int64, *resterrors.RestErr
 		company.SocialNetwork.LinkedinURL,
 		company.SocialNetwork.TwitterURL)
 	if err != nil {
-		errorCode := "Error 0004: "
+		errorCode := "Error 0007: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Create company", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
 	companyID, err := insertResult.LastInsertId()
 	if err != nil {
-		errorCode := "Error 0005: "
+		errorCode := "Error 0008: "
 		log.Println(fmt.Sprintf("%sError when trying to get LastInsertId in the Create company", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -243,7 +243,7 @@ func (s *companyRepo) Update(company entity.Company) (*entity.Company, *resterro
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0006: "
+		errorCode := "Error 0009: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Update company", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -258,7 +258,7 @@ func (s *companyRepo) Update(company entity.Company) (*entity.Company, *resterro
 		company.BusinessID,
 		company.ID)
 	if err != nil {
-		errorCode := "Error 0007: "
+		errorCode := "Error 0010: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Update company", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -276,7 +276,7 @@ func (s *companyRepo) Delete(id int64) *resterrors.RestErr {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0008: "
+		errorCode := "Error 0011: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Delete company", errorCode), err)
 		return resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -284,7 +284,7 @@ func (s *companyRepo) Delete(id int64) *resterrors.RestErr {
 
 	_, err = stmt.Exec(id)
 	if err != nil {
-		errorCode := "Error 0009: "
+		errorCode := "Error 0012: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Delete company", errorCode), err)
 		return mysqlutils.HandleMySQLError(errorCode, err)
 	}

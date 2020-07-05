@@ -82,7 +82,7 @@ func (s *userRepo) GetUsers() (*[]entity.User, *resterrors.RestErr) {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0024: "
+		errorCode := "Error 0001: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetUserByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -92,7 +92,7 @@ func (s *userRepo) GetUsers() (*[]entity.User, *resterrors.RestErr) {
 
 	rows, err := stmt.Query()
 	if err != nil {
-		errorCode := "Error 0025: "
+		errorCode := "Error 0002: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetUsers", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -100,7 +100,7 @@ func (s *userRepo) GetUsers() (*[]entity.User, *resterrors.RestErr) {
 
 	users, err = s.parseUserSet(rows)
 	if err != nil {
-		errorCode := "Error 0026: "
+		errorCode := "Error 0003: "
 		log.Println(fmt.Sprintf("%sError when trying to parse result in parseUserSet", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -116,7 +116,7 @@ func (s *userRepo) GetUserByID(id int64) (*entity.User, *resterrors.RestErr) {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0001: "
+		errorCode := "Error 0004: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetUserByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -127,7 +127,7 @@ func (s *userRepo) GetUserByID(id int64) (*entity.User, *resterrors.RestErr) {
 	result := stmt.QueryRow(id)
 	user, err = s.parseUser(result)
 	if err != nil {
-		errorCode := "Error 0002: "
+		errorCode := "Error 0005: "
 		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetUserByID", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -155,7 +155,7 @@ func (s *userRepo) Create(user entity.User) (int64, *resterrors.RestErr) {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0003: "
+		errorCode := "Error 0006: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Create user", errorCode), err)
 		return 0, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -173,14 +173,14 @@ func (s *userRepo) Create(user entity.User) (int64, *resterrors.RestErr) {
 		user.Gender,
 		user.Revenue)
 	if err != nil {
-		errorCode := "Error 0004: "
+		errorCode := "Error 0007: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Create user", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
 	userID, err := insertResult.LastInsertId()
 	if err != nil {
-		errorCode := "Error 0005: "
+		errorCode := "Error 0008: "
 		log.Println(fmt.Sprintf("%sError when trying to get LastInsertId in the Create user", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -204,7 +204,7 @@ func (s *userRepo) Update(user entity.User) (*entity.User, *resterrors.RestErr) 
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0006: "
+		errorCode := "Error 0009: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Update user", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -218,7 +218,7 @@ func (s *userRepo) Update(user entity.User) (*entity.User, *resterrors.RestErr) 
 		user.PhoneNumber,
 		user.ID)
 	if err != nil {
-		errorCode := "Error 0007: "
+		errorCode := "Error 00010: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Update user", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -236,7 +236,7 @@ func (s *userRepo) Delete(id int64) *resterrors.RestErr {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0008: "
+		errorCode := "Error 0011: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Delete user", errorCode), err)
 		return resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -244,7 +244,7 @@ func (s *userRepo) Delete(id int64) *resterrors.RestErr {
 
 	_, err = stmt.Exec(id)
 	if err != nil {
-		errorCode := "Error 0009: "
+		errorCode := "Error 0012: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Delete user", errorCode), err)
 		return mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -263,7 +263,7 @@ func (s *userRepo) GetByEmailAndPassword(userRequest entity.LoginRequest) (*enti
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0010: "
+		errorCode := "Error 0013: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetByEmailAndPassword", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -274,7 +274,7 @@ func (s *userRepo) GetByEmailAndPassword(userRequest entity.LoginRequest) (*enti
 	var user entity.User
 	user, err = s.parseUser(result)
 	if err != nil {
-		errorCode := "Error 0011: "
+		errorCode := "Error 0014: "
 		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetByDocumentNumberAndPassword", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}

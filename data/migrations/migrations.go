@@ -52,6 +52,7 @@ var (
 				minimum_age_for_consumption INT(3) NOT NULL DEFAULT 0,
 				product_image_url VARCHAR(3000) NULL,
 				time_for_preparing_minutes INT(11) NOT NULL DEFAULT 0,
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 				PRIMARY KEY (id),
 				INDEX fk_tab_product_tab_product_category_idx (id ASC),
@@ -99,6 +100,7 @@ var (
 				facebook_url VARCHAR(3000) NULL DEFAULT 'https://www.facebook.com/cervejariaambev/',
 				linkedin_url VARCHAR(3000) NULL DEFAULT 'https://www.linkedin.com/company/ambev/',
 				twitter_url VARCHAR(3000) NULL DEFAULT 'https://twitter.com/cervejariaambev',
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 				PRIMARY KEY (id),
 				INDEX fk_tab_company_tab_company_business_idx (id ASC),
@@ -110,9 +112,63 @@ var (
 					ON UPDATE NO ACTION
 			) ENGINE=InnoDB CHARACTER SET=utf8;`,
 		},
-		// ============================================== ADDI FAKE DATA ==============================================
 		{
 			Version:     6,
+			Description: "Creating table tab_order",
+			Script: `CREATE TABLE IF NOT EXISTS tab_order (
+				id INT NOT NULL AUTO_INCREMENT,
+				user_id INT(11) NOT NULL,
+				company_id INT(11) NULL,
+				accept_tip TINYINT(1) NOT NULL,
+				total_tip DECIMAL(7,2) NOT NULL DEFAULT '0.00',
+				total_price DECIMAL(7,2) NOT NULL DEFAULT '0.00',
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+				PRIMARY KEY (id),
+				UNIQUE INDEX ID_UNIQUE (id ASC),
+				INDEX fk_tab_order_tab_user_idx (id ASC),
+				INDEX fk_tab_order_tab_company_idx (id ASC),
+				CONSTRAINT fk_user
+					FOREIGN KEY (user_id)
+					REFERENCES chefia_db.tab_user (id)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_company
+					FOREIGN KEY (company_id)
+					REFERENCES chefia_db.tab_company (id)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION
+			) ENGINE=InnoDB CHARACTER SET=utf8;`,
+		},
+		{
+			Version:     7,
+			Description: "Creating table tab_order_product",
+			Script: `CREATE TABLE IF NOT EXISTS tab_order_product (
+				id INT NOT NULL AUTO_INCREMENT,
+				order_id INT(11) NOT NULL,
+				product_id INT(11) NOT NULL,
+				quantity INT(11) NULL,
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+				PRIMARY KEY (id),
+				UNIQUE INDEX ID_UNIQUE (id ASC),
+				INDEX fk_tab_order_product_tab_order_idx (id ASC),
+				INDEX fk_tab_order_product_tab_product_idx (id ASC),
+				CONSTRAINT fk_order
+					FOREIGN KEY (order_id)
+					REFERENCES chefia_db.tab_order (id)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_product
+					FOREIGN KEY (product_id)
+					REFERENCES chefia_db.tab_product (id)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION
+			) ENGINE=InnoDB CHARACTER SET=utf8;`,
+		},
+		// ============================================== ADD FAKE DATA ==============================================
+		{
+			Version:     8,
 			Description: "Inserting data on table tab_user",
 			Script: `
 				INSERT INTO tab_user 
@@ -126,7 +182,7 @@ var (
 			`,
 		},
 		{
-			Version:     7,
+			Version:     9,
 			Description: "Inserting data on table tab_product_category",
 			Script: `
 				INSERT INTO tab_product_category 
@@ -140,7 +196,7 @@ var (
 			`,
 		},
 		{
-			Version:     8,
+			Version:     10,
 			Description: "Inserting data on table tab_company_business",
 			Script: `
 				INSERT INTO tab_company_business 
@@ -154,7 +210,7 @@ var (
 			`,
 		},
 		{
-			Version:     9,
+			Version:     11,
 			Description: "Inserting data on table tab_product",
 			Script: `
 				INSERT INTO tab_product 
@@ -171,7 +227,7 @@ var (
 			`,
 		},
 		{
-			Version:     10,
+			Version:     12,
 			Description: "Inserting data on table tab_company",
 			Script: `
 				INSERT INTO tab_company 

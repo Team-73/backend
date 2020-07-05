@@ -86,6 +86,7 @@ func (s *Controller) handleCreateCompany(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&company)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -106,6 +107,7 @@ func (s *Controller) handleUpdateCompany(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&company)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -149,7 +151,7 @@ func (s *Controller) handleDeleteCompany(c *gin.Context) {
 func (s *Controller) getIDParameter(companyParamID string) (int64, *resterrors.RestErr) {
 	companyID, companyErr := strconv.ParseInt(companyParamID, 10, 64)
 	if companyErr != nil {
-		return 0, resterrors.NewBadRequestError("Company id should be a number")
+		return 0, resterrors.NewBadRequestError("Param id should be a number")
 	}
 
 	return companyID, nil

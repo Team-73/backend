@@ -1,5 +1,6 @@
 package domain
 
+// Default tip for order operations
 const (
-	StatusActive = "active"
+	DefaultTipPercent float64 = 0.1
 )

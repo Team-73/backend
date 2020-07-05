@@ -22,6 +22,7 @@ type Manager interface {
 	CompanyService(svc *Service) contract.CompanyService
 	ProductService(svc *Service) contract.ProductService
 	UserService(svc *Service) contract.UserService
+	OrderService(svc *Service) contract.OrderService
 }
 
 type serviceManager struct {
@@ -51,4 +52,8 @@ func (s *serviceManager) ProductService(svc *Service) contract.ProductService {
 
 func (s *serviceManager) UserService(svc *Service) contract.UserService {
 	return newUserService(svc)
+}
+
+func (s *serviceManager) OrderService(svc *Service) contract.OrderService {
+	return newOrderService(svc)
 }

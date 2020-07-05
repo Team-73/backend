@@ -1,6 +1,7 @@
 package userroute
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -79,6 +80,7 @@ func (s *Controller) handleCreateUser(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -99,6 +101,7 @@ func (s *Controller) handleUpdateUser(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -147,6 +150,7 @@ func (s *Controller) handleLogin(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&credentials)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -164,7 +168,7 @@ func (s *Controller) handleLogin(c *gin.Context) {
 func (s *Controller) getIDParameter(userParamID string) (int64, *resterrors.RestErr) {
 	userID, userErr := strconv.ParseInt(userParamID, 10, 64)
 	if userErr != nil {
-		return 0, resterrors.NewBadRequestError("User id should be a number")
+		return 0, resterrors.NewBadRequestError("Param id should be a number")
 	}
 
 	return userID, nil

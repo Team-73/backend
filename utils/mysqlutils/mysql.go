@@ -20,7 +20,7 @@ func HandleMySQLError(errCode string, err error) *resterrors.RestErr {
 	sqlErr, exists := err.(*mysql.MySQLError)
 	if !exists {
 		if strings.Contains(err.Error(), errorNoRows) {
-			if errCode == "Error 0011: " {
+			if errCode == "Error 0014: " {
 				return resterrors.NewNotFoundError(fmt.Sprintf("%sInvalid user credentials", errCode))
 			}
 			return resterrors.NewNotFoundError(fmt.Sprintf("%sNo records find with the parameters", errCode))

@@ -21,12 +21,12 @@ func newCategoryService(svc *Service) contract.CategoryService {
 
 func (s *categoryService) GetCategories() (*[]entity.Category, *resterrors.RestErr) {
 
-	categorys, err := s.svc.db.Category().GetCategories()
+	categories, err := s.svc.db.Category().GetCategories()
 	if err != nil {
 		return nil, err
 	}
 
-	return categorys, nil
+	return categories, nil
 }
 
 func (s *categoryService) GetCategoryByID(categoryID int64) (*entity.Category, *resterrors.RestErr) {

@@ -1,6 +1,7 @@
 package categoryroute
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -74,6 +75,7 @@ func (s *Controller) handleCreateCategory(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&category)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -94,6 +96,7 @@ func (s *Controller) handleUpdateCategory(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&category)
 	if err != nil {
+		log.Println(err)
 		restErr := resterrors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.StatusCode, restErr)
 		return
@@ -137,7 +140,7 @@ func (s *Controller) handleDeleteCategory(c *gin.Context) {
 func (s *Controller) getIDParameter(categoryParamID string) (int64, *resterrors.RestErr) {
 	categoryID, categoryErr := strconv.ParseInt(categoryParamID, 10, 64)
 	if categoryErr != nil {
-		return 0, resterrors.NewBadRequestError("Category id should be a number")
+		return 0, resterrors.NewBadRequestError("Param id should be a number")
 	}
 
 	return categoryID, nil

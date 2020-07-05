@@ -83,7 +83,7 @@ func (s *productRepo) GetProducts(categoryID int64) (*[]entity.Product, *resterr
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0021: "
+		errorCode := "Error 0001: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetProductByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -93,7 +93,7 @@ func (s *productRepo) GetProducts(categoryID int64) (*[]entity.Product, *resterr
 
 	rows, err := stmt.Query(params...)
 	if err != nil {
-		errorCode := "Error 0022: "
+		errorCode := "Error 0002: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetProducts", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -101,7 +101,7 @@ func (s *productRepo) GetProducts(categoryID int64) (*[]entity.Product, *resterr
 
 	products, err = s.parseProductSet(rows)
 	if err != nil {
-		errorCode := "Error 0023: "
+		errorCode := "Error 0003: "
 		log.Println(fmt.Sprintf("%sError when trying to parse result in parseProductSet", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -117,7 +117,7 @@ func (s *productRepo) GetProductByID(id int64) (*entity.Product, *resterrors.Res
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0012: "
+		errorCode := "Error 0004: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetProductByID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -128,7 +128,7 @@ func (s *productRepo) GetProductByID(id int64) (*entity.Product, *resterrors.Res
 	result := stmt.QueryRow(id)
 	product, err = s.parseProduct(result)
 	if err != nil {
-		errorCode := "Error 0013: "
+		errorCode := "Error 0005: "
 		log.Println(fmt.Sprintf("%sError when trying to execute QueryRow in GetProductByID", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -154,7 +154,7 @@ func (s *productRepo) Create(product entity.Product) (int64, *resterrors.RestErr
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0014: "
+		errorCode := "Error 0006: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Create a product", errorCode), err)
 		return 0, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -170,14 +170,14 @@ func (s *productRepo) Create(product entity.Product) (int64, *resterrors.RestErr
 		product.ProductImageURL,
 		product.TimeForPreparingMinutes)
 	if err != nil {
-		errorCode := "Error 0015: "
+		errorCode := "Error 0007: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Create product", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
 	productID, err := insertResult.LastInsertId()
 	if err != nil {
-		errorCode := "Error 0016: "
+		errorCode := "Error 0008: "
 		log.Println(fmt.Sprintf("%sError when trying to get LastInsertId in the Create product", errorCode), err)
 		return 0, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -204,7 +204,7 @@ func (s *productRepo) Update(product entity.Product) (*entity.Product, *resterro
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0017: "
+		errorCode := "Error 0009: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Update a product", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -221,7 +221,7 @@ func (s *productRepo) Update(product entity.Product) (*entity.Product, *resterro
 		product.TimeForPreparingMinutes,
 		product.ID)
 	if err != nil {
-		errorCode := "Error 0018: "
+		errorCode := "Error 0010: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Update product", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
@@ -239,7 +239,7 @@ func (s *productRepo) Delete(id int64) *resterrors.RestErr {
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0019: "
+		errorCode := "Error 0011: "
 		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in the Delete product", errorCode), err)
 		return resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
@@ -247,7 +247,7 @@ func (s *productRepo) Delete(id int64) *resterrors.RestErr {
 
 	_, err = stmt.Exec(id)
 	if err != nil {
-		errorCode := "Error 0020: "
+		errorCode := "Error 0012: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in the Delete product", errorCode), err)
 		return mysqlutils.HandleMySQLError(errorCode, err)
 	}
