@@ -42,6 +42,17 @@ func (s *companyService) GetCompanyByID(companyID int64) (*entity.Company, *rest
 	return company, nil
 }
 
+func (s *companyService) GetCompanyUserRating(companyID, userID int64) (*entity.CompanyRating, *resterrors.RestErr) {
+
+	companyRatingResult, err := s.svc.db.Company().GetCompanyUserRating(companyID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return companyRatingResult, nil
+
+}
+
 func (s *companyService) CreateCompany(company entity.Company) (int64, *resterrors.RestErr) {
 	if err := company.Validate(); err != nil {
 		return 0, err
@@ -96,7 +107,7 @@ func (s *companyService) UpdateCompany(company entity.Company) (*entity.Company,
 
 func (s *companyService) UpdateCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr) {
 
-	companyRatingResult, err := s.svc.db.Company().GetUserCompanyRating(companyRating)
+	companyRatingResult, err := s.GetCompanyUserRating(companyRating.CompanyID, companyRating.UserID)
 	if err != nil {
 		return nil, err
 	}

@@ -41,7 +41,7 @@ type CategoryRepo interface {
 type CompanyRepo interface {
 	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
 	GetCompanyByID(companyID int64) (*entity.Company, *resterrors.RestErr)
-	GetUserCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)
+	GetCompanyUserRating(companyID, userID int64) (*entity.CompanyRating, *resterrors.RestErr)
 	Create(entity.Company) (int64, *resterrors.RestErr)
 	CreateCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)
 	UpdateCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)

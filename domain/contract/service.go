@@ -50,6 +50,7 @@ type BusinessService interface {
 type CompanyService interface {
 	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
 	GetCompanyByID(userID int64) (*entity.Company, *resterrors.RestErr)
+	GetCompanyUserRating(companyID, userID int64) (*entity.CompanyRating, *resterrors.RestErr)
 	CreateCompany(entity.Company) (int64, *resterrors.RestErr)
 	UpdateCompany(entity.Company) (*entity.Company, *resterrors.RestErr)
 	UpdateCompanyRating(entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)

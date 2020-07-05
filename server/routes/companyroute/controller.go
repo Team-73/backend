@@ -61,6 +61,36 @@ func (s *Controller) handleGetCompanyByID(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// handleGetCompanyUserRating to handle a get company request
+func (s *Controller) handleGetCompanyUserRating(c *gin.Context) {
+
+	companyID, errID := s.getIDParameter(c.Param("company_id"))
+	if errID != nil {
+		c.JSON(errID.StatusCode, errID)
+		return
+	}
+
+	userID, errID := s.getIDParameter(c.Param("user_id"))
+	if errID != nil {
+		c.JSON(errID.StatusCode, errID)
+		return
+	}
+
+	if userID == 0 || companyID == 0 {
+		restErr := resterrors.NewBadRequestError("The params company_id and user_id need to be sent")
+		c.JSON(restErr.StatusCode, restErr)
+		return
+	}
+
+	result, getErr := s.companyService.GetCompanyUserRating(companyID, userID)
+	if getErr != nil {
+		c.JSON(getErr.StatusCode, getErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
 // handleGetCompanies to handle a get company request
 func (s *Controller) handleGetCompanies(c *gin.Context) {
 
