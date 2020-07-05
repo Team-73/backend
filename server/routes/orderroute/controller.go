@@ -52,7 +52,6 @@ func (s *Controller) handleCreateOrder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"id": orderID})
-
 }
 
 // handleGetOrdersByUserID - handle a get order request
@@ -71,7 +70,24 @@ func (s *Controller) handleGetOrdersByUserID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, orders)
+}
 
+// handleGetOrderDetail - handle a get order request
+func (s *Controller) handleGetOrderDetail(c *gin.Context) {
+
+	orderID, errID := s.getIDParameter(c.Param("id"))
+	if errID != nil {
+		c.JSON(errID.StatusCode, errID)
+		return
+	}
+
+	order, err := s.orderService.GetOrderDetail(orderID)
+	if err != nil {
+		c.JSON(err.StatusCode, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, order)
 }
 
 func (s *Controller) getIDParameter(ParamID string) (int64, *resterrors.RestErr) {

@@ -21,5 +21,7 @@ func NewRoute(ctrl *Controller, router *gin.Engine) *Route {
 //RegisterRoutes is a routers map of ping requests
 func (r *Route) RegisterRoutes() {
 	r.router.POST("/order", r.ctrl.handleCreateOrder)
+	r.router.GET("/order/detail/:id", r.ctrl.handleGetOrderDetail)
+
 	r.router.GET("/orders/user/:id", r.ctrl.handleGetOrdersByUserID)
 }

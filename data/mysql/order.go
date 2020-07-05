@@ -21,47 +21,176 @@ func newOrderRepo(db *sql.DB) *orderRepo {
 	}
 }
 
-const queryOrderSelectBase = `
-					SELECT 	o.id,
-									o.user_id,
-									o.company_id,
-									o.total_tip,
-									o.total_price,
-									o.created_at
+//GetOrdersByUserID to get all orders by userID
+func (s *orderRepo) GetOrdersByUserID(userID int64) (*[]entity.OrdersByUserID, *resterrors.RestErr) {
 
-								
-					FROM 		tab_order 		o
-					`
+	query := `
+		SELECT
+			o.id,
+			o.company_id,
+			c.name,
+			o.total_price,
+			IFNULL(cr.total_rating, 0) 			AS total_rating,
+			COUNT(op.id)		 								AS total_items,
+			o.created_at
 
-func (s *orderRepo) parseOrderSet(rows *sql.Rows) (orders []entity.Order, err error) {
+		FROM 				tab_order 		o
+
+		INNER JOIN 	tab_company						c
+				ON 			o.company_id					= c.id
+
+		LEFT JOIN 	tab_rating		cr
+				ON 			o.company_id					= cr.company_id
+				AND			cr.user_id						= o.user_id
+
+		LEFT JOIN 	tab_order_product			op
+				ON 			o.id									= op.order_id
+
+		WHERE 			o.user_id 						= ?
+		
+		GROUP BY		
+			o.id, 
+			o.company_id, 
+			c.name, 
+			o.total_price, 
+			cr.total_rating, 
+			o.created_at;
+	`
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrdersByUserID", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrdersByUserID", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+
+	var orders []entity.OrdersByUserID
+	var order entity.OrdersByUserID
 	for rows.Next() {
-		order := entity.Order{}
-		order, err = s.parseOrder(rows)
+		err = rows.Scan(
+			&order.OrderID,
+			&order.CompanyID,
+			&order.CompanyName,
+			&order.TotalPrice,
+			&order.TotalRating,
+			&order.TotalItems,
+			&order.CreatedAt,
+		)
 		if err != nil {
-			return orders, err
+			errorCode := "Error 0005: "
+			log.Println(fmt.Sprintf("%sError when trying to execute Query in GetOrdersByUserID", errorCode), err)
+			return nil, mysqlutils.HandleMySQLError(errorCode, err)
 		}
 		orders = append(orders, order)
 	}
 
-	return orders, nil
+	return &orders, nil
 }
 
-func (s *orderRepo) parseOrder(row scanner) (order entity.Order, err error) {
+//GetOrderDetail to get order detail
+func (s *orderRepo) GetOrderDetail(orderID int64) (*entity.OrderDetail, *resterrors.RestErr) {
+
+	query := `
+		SELECT
+			o.company_id,
+			c.name,
+			o.total_price,
+			o.total_tip,
+			o.created_at
+
+		FROM 				tab_order 		o
+
+		INNER JOIN 	tab_company		c
+				ON 			o.company_id	= c.id
+
+		WHERE 			o.id 					= ?;
+	`
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrderDetail", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(orderID)
+
+	var order entity.OrderDetail
 
 	err = row.Scan(
-		&order.ID,
-		&order.UserID,
-		&order.UserID,
-		&order.UserID,
-		&order.UserID,
-		&order.UserID,
+		&order.CompanyID,
+		&order.CompanyName,
+		&order.TotalPrice,
+		&order.TotalTip,
+		&order.CreatedAt,
 	)
-
 	if err != nil {
-		return order, err
+		errorCode := "Error 0005: "
+		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetOrderDetail", errorCode), err)
+		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
-	return order, nil
+	return &order, nil
+}
+
+//GetOrderProducts to get all products detail of a orderID
+func (s *orderRepo) GetOrderProducts(orderID int64) ([]entity.ProductsDetail, *resterrors.RestErr) {
+
+	query := `
+		SELECT
+			op.quantity,
+			p.name,
+		 (p.price * op.quantity)					AS total_product_price
+
+		FROM 				tab_order_product 		op
+
+		INNER JOIN 	tab_product						p
+				ON 			op.product_id					= p.id
+
+		WHERE 			op.order_id 					= ?;
+	`
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrderProducts", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(orderID)
+	if err != nil {
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrderProducts", errorCode), err)
+		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
+	}
+
+	var products []entity.ProductsDetail
+	var product entity.ProductsDetail
+	for rows.Next() {
+		err = rows.Scan(
+			&product.Quantity,
+			&product.ProductName,
+			&product.TotalProductPrice,
+		)
+		if err != nil {
+			errorCode := "Error 0005: "
+			log.Println(fmt.Sprintf("%sError when trying to execute Query in GetOrderProducts", errorCode), err)
+			return nil, mysqlutils.HandleMySQLError(errorCode, err)
+		}
+		products = append(products, product)
+	}
+
+	return products, nil
 }
 
 // CreateOrder - to create a order on database
@@ -188,58 +317,3 @@ func (s *orderRepo) UpdateOrder(orderID int64, order entity.Order) *resterrors.R
 
 	return nil
 }
-
-/* func (s *orderRepo) GetOrdersByUserID(userID int64) ([]entity.OrdersByUserID, *resterrors.RestErr) {
-
-	query := `
-		SELECT
-			o.id,
-			o.user_id,
-			o.company_id,
-			o.total_tip,
-			o.total_price,
-			o.created_at
-
-		FROM tab_order o
-		WHERE o.user_id = ?;
-	`
-
-	stmt, err := s.db.Prepare(query)
-	if err != nil {
-		errorCode := "Error 0004: "
-		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrdersByUserID", errorCode), err)
-		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(userID)
-	if err != nil {
-		errorCode := "Error 0004: "
-		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrdersByUserID", errorCode), err)
-		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
-	}
-
-	var orders []entity.OrdersByUserID
-	for rows.Next() {
-		order := entity.OrdersByUserID{}
-		err = rows.Scan(
-			&order.ID,
-			&order.UserID,
-			&order.CompanyID,
-			&order.Rating,
-			&order.AcceptTip,
-			&order.TotalTip,
-			&order.TotalPrice,
-			&order.CreatedAt,
-		)
-		if err != nil {
-			errorCode := "Error 0005: "
-			log.Println(fmt.Sprintf("%sError when trying to execute Query in GetOrdersByUserID", errorCode), err)
-			return nil, mysqlutils.HandleMySQLError(errorCode, err)
-		}
-		orders = append(orders, order)
-	}
-
-	return orders, nil
-}
-*/

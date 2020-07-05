@@ -4,6 +4,7 @@ import (
 	"github.com/Team-73/backend/domain"
 	"github.com/Team-73/backend/domain/contract"
 	"github.com/Team-73/backend/domain/entity"
+	"github.com/Team-73/backend/utils/priceutils"
 	"github.com/diegoclair/go_utils-lib/resterrors"
 )
 
@@ -46,16 +47,30 @@ func (s *orderService) CreateOrder(order entity.Order) (int64, *resterrors.RestE
 	return newOrderID, nil
 }
 
-func (s *orderService) GetOrdersByUserID(userID int64) (*[]entity.Order, *resterrors.RestErr) {
+func (s *orderService) GetOrdersByUserID(userID int64) (*[]entity.OrdersByUserID, *resterrors.RestErr) {
 
-	/*orders, err := s.svc.db.Order().GetOrdersByUserID(userID)
+	orders, err := s.svc.db.Order().GetOrdersByUserID(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	 for i := 0; i < len(orders); i++ {
-		orders[i].Products, err = s.svc.db.Order().GetProductsByOrderID(userID)
-	} */
+	return orders, nil
+}
 
-	return nil, nil
+func (s *orderService) GetOrderDetail(orderID int64) (*entity.OrderDetail, *resterrors.RestErr) {
+
+	order, err := s.svc.db.Order().GetOrderDetail(orderID)
+	if err != nil {
+		return nil, err
+	}
+
+	order.SubTotal = order.TotalPrice - order.TotalTip
+	order.SubTotal = priceutils.ToFixed(order.SubTotal, 2)
+
+	order.ProductsDetail, err = s.svc.db.Order().GetOrderProducts(orderID)
+	if err != nil {
+		return nil, err
+	}
+
+	return order, nil
 }

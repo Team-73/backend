@@ -40,10 +40,10 @@ type CategoryRepo interface {
 
 // CompanyRepo defines the data set for a company
 type CompanyRepo interface {
-	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
-	GetCompanyByID(companyID int64) (*entity.Company, *resterrors.RestErr)
-	Create(entity.Company) (int64, *resterrors.RestErr)
-	Update(entity.Company) (*entity.Company, *resterrors.RestErr)
+	GetCompanies() ([]entity.Companies, *resterrors.RestErr)
+	GetCompanyByID(companyID int64) (*entity.CompanyDetail, *resterrors.RestErr)
+	Create(entity.CompanyDetail) (int64, *resterrors.RestErr)
+	Update(entity.CompanyDetail) (*entity.CompanyDetail, *resterrors.RestErr)
 	Delete(companyID int64) *resterrors.RestErr
 }
 
@@ -68,10 +68,12 @@ type UserRepo interface {
 
 // OrderRepo defines the data set for a category
 type OrderRepo interface {
+	GetOrdersByUserID(userID int64) (*[]entity.OrdersByUserID, *resterrors.RestErr)
+	GetOrderDetail(orderID int64) (*entity.OrderDetail, *resterrors.RestErr)
+	GetOrderProducts(orderID int64) ([]entity.ProductsDetail, *resterrors.RestErr)
 	CreateOrder(entity.Order) (int64, *resterrors.RestErr)
 	CreateOrderProductAndReturnProductPrice(orderID int64, oderProduct entity.OrderProduct) (float64, *resterrors.RestErr)
 	UpdateOrder(orderID int64, order entity.Order) *resterrors.RestErr
-	//GetOrdersByUserID(userID int64) ([]entity.Order, *resterrors.RestErr)
 }
 
 // RatingRepo defines the data set for a category

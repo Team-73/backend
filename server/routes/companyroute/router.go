@@ -22,6 +22,7 @@ func NewRoute(ctrl *Controller, router *gin.Engine) *Router {
 func (r *Router) RegisterRoutes() {
 
 	r.router.GET("/companies", r.ctrl.handleGetCompanies)
+
 	r.router.GET("/company/:id", r.ctrl.handleGetCompanyByID)
 	r.router.GET("/company/:id/products", r.ctrl.handleGetProductsByCompanyID)
 	r.router.POST("/company", r.ctrl.handleCreateCompany)

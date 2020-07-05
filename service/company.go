@@ -19,18 +19,26 @@ func newCompanyService(svc *Service) contract.CompanyService {
 	}
 }
 
-func (s *companyService) GetCompanies() (*[]entity.Company, *resterrors.RestErr) {
+func (s *companyService) GetCompanies() (*[]entity.Companies, *resterrors.RestErr) {
 
+	var totalRatingQuestions int = 5
 	companies, err := s.svc.db.Company().GetCompanies()
 	if err != nil {
 		return nil, err
 	}
 
-	return companies, nil
+	for i := 0; i < len(companies); i++ {
+		if float64(companies[i].TotalRating) > 0 && companies[i].RatingQuantity > 0 {
+			companies[i].AverageRating = float64(companies[i].TotalRating) / (companies[i].RatingQuantity * float64(totalRatingQuestions))
+		}
+
+	}
+
+	return &companies, nil
 }
 
-func (s *companyService) GetCompanyByID(companyID int64) (*entity.Company, *resterrors.RestErr) {
-	company := &entity.Company{
+func (s *companyService) GetCompanyByID(companyID int64) (*entity.CompanyDetail, *resterrors.RestErr) {
+	company := &entity.CompanyDetail{
 		ID: companyID,
 	}
 
@@ -42,7 +50,7 @@ func (s *companyService) GetCompanyByID(companyID int64) (*entity.Company, *rest
 	return company, nil
 }
 
-func (s *companyService) CreateCompany(company entity.Company) (int64, *resterrors.RestErr) {
+func (s *companyService) CreateCompany(company entity.CompanyDetail) (int64, *resterrors.RestErr) {
 	if err := company.Validate(); err != nil {
 		return 0, err
 	}
@@ -55,7 +63,7 @@ func (s *companyService) CreateCompany(company entity.Company) (int64, *resterro
 	return newCompany, nil
 }
 
-func (s *companyService) UpdateCompany(company entity.Company) (*entity.Company, *resterrors.RestErr) {
+func (s *companyService) UpdateCompany(company entity.CompanyDetail) (*entity.CompanyDetail, *resterrors.RestErr) {
 
 	currentCompany, err := s.GetCompanyByID(company.ID)
 	if err != nil {

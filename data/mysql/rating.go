@@ -39,7 +39,7 @@ func (s *ratingRepo) GetCompanyUserRating(companyID, userID int64) (*entity.Rati
 			cr.would_go_back,
 			cr.created_at
 
-		FROM tab_company_rating cr
+		FROM tab_rating cr
 		WHERE cr.user_id 		= ?
 		AND 	cr.company_id = ?
 	`
@@ -80,7 +80,7 @@ func (s *ratingRepo) GetCompanyUserRating(companyID, userID int64) (*entity.Rati
 func (s *ratingRepo) CreateRating(rating entity.Rating) (*entity.Rating, *resterrors.RestErr) {
 
 	query := `
-		INSERT INTO tab_company_rating (
+		INSERT INTO tab_rating (
 			user_id,
 			company_id,
 			total_rating,
@@ -122,7 +122,7 @@ func (s *ratingRepo) CreateRating(rating entity.Rating) (*entity.Rating, *rester
 func (s *ratingRepo) UpdateRating(rating entity.Rating) (*entity.Rating, *resterrors.RestErr) {
 
 	query := `
-		UPDATE tab_company_rating
+		UPDATE tab_rating
 			SET	customer_service	= ?,
 					company_clean			= ?,
 					ice_beer					= ?,

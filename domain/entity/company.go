@@ -6,11 +6,25 @@ import (
 	"github.com/diegoclair/go_utils-lib/resterrors"
 )
 
-// Company entity
-type Company struct {
+// Companies entity
+type Companies struct {
+	CompanyID      int64   `json:"company_id"`
+	CompanyName    string  `json:"company_name"`
+	TotalRating    int64   `json:"total_rating"`
+	RatingQuantity float64 `json:"rating_quantity"`
+	AverageRating  float64 `json:"average_rating"`
+	Street         string  `json:"street"`
+	Number         string  `json:"number"`
+	City           string  `json:"city"`
+	FederativeUnit string  `json:"federative_unit"`
+}
+
+// CompanyDetail entity
+type CompanyDetail struct {
 	ID             int64         `json:"id"`
 	Name           string        `json:"name"`
 	Email          string        `json:"email"`
+	Description    string        `json:"description"`
 	CountryCode    string        `json:"country_code"`
 	AreaCode       string        `json:"area_code"`
 	PhoneNumber    string        `json:"phone_number"`
@@ -42,7 +56,7 @@ type SocialNetwork struct {
 }
 
 // Validate to validate a user data
-func (company *Company) Validate() *resterrors.RestErr {
+func (company *CompanyDetail) Validate() *resterrors.RestErr {
 
 	company.Name = strings.TrimSpace(company.Name)
 	if company.Name == "" {

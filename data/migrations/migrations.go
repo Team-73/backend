@@ -82,6 +82,7 @@ var (
 				id INT NOT NULL AUTO_INCREMENT,
 				name VARCHAR(100) NOT NULL,
 				email VARCHAR (50) NOT NULL,
+				description VARCHAR (3000) NULL,
 				country_code VARCHAR(4) NULL,
 				area_code VARCHAR(3) NOT NULL,
 				phone_number VARCHAR(9) NOT NULL,
@@ -119,6 +120,7 @@ var (
 				id INT NOT NULL AUTO_INCREMENT,
 				user_id INT(11) NOT NULL,
 				company_id INT(11) NULL,
+				observation VARCHAR(350) NULL,
 				accept_tip TINYINT(1) NOT NULL,
 				total_tip DECIMAL(7,2) NOT NULL DEFAULT '0.00',
 				total_price DECIMAL(7,2) NOT NULL DEFAULT '0.00',
@@ -168,8 +170,8 @@ var (
 		},
 		{
 			Version:     8,
-			Description: "Creating table tab_company_rating",
-			Script: `CREATE TABLE IF NOT EXISTS tab_company_rating (
+			Description: "Creating table tab_rating",
+			Script: `CREATE TABLE IF NOT EXISTS tab_rating (
 				id INT NOT NULL AUTO_INCREMENT,
 				user_id INT(11) NULL,
 				company_id INT(11) NULL,
@@ -183,8 +185,8 @@ var (
 
 				PRIMARY KEY (id),
 				UNIQUE INDEX ID_UNIQUE (id ASC),
-				INDEX fk_tab_company_rating_tab_user_idx (id ASC),
-				INDEX fk_tab_company_rating_tab_company_idx (id ASC),
+				INDEX fk_tab_rating_tab_user_idx (id ASC),
+				INDEX fk_tab_rating_tab_company_idx (id ASC),
 				CONSTRAINT fk_company_rating_user
 					FOREIGN KEY (user_id)
 					REFERENCES chefia_db.tab_user (id)
@@ -205,11 +207,11 @@ var (
 				INSERT INTO tab_user 
 					(id,name,email,password,document_number,country_code,area_code,phone_number,birthdate,gender,revenue)
 				VALUES
-				(1,'Diego Clair','diego@gmail.com','12345678','01234567890','055','011','991212475','1993-10-25','M',3500.55),
-				(2,'Fernando Camilo','fernando@gmail.com','12345678','01234567890','055','011','991212475','1993-10-25','M',3500.55),
-				(3,'João Hortale','joao@gmail.com','12345678','01234567890','055','011','991212475','1993-10-25','M',3500.55),
-				(4,'Gisele Karpinski','gisele@gmail.com','12345678','01234567890','055','011','991212475','1993-10-25','F',3500.55),
-				(5,'Guilherme Castro','guilherme@gmail.com','12345678','01234567890','055','011','991212475','1993-10-25','M',3500.55);
+				(1,'Diego Clair','diego@gmail.com','25d55ad283aa400af464c76d713c07ad','01234567890','055','011','991212475','1993-10-25','M',3500.55),
+				(2,'Fernando Camilo','fernando@gmail.com','25d55ad283aa400af464c76d713c07ad','01234567890','055','011','991212475','1993-10-25','M',3500.55),
+				(3,'João Hortale','joao@gmail.com','25d55ad283aa400af464c76d713c07ad','01234567890','055','011','991212475','1993-10-25','M',3500.55),
+				(4,'Gisele Karpinski','gisele@gmail.com','25d55ad283aa400af464c76d713c07ad','01234567890','055','011','991212475','1993-10-25','F',3500.55),
+				(5,'Guilherme Castro','guilherme@gmail.com','25d55ad283aa400af464c76d713c07ad','01234567890','055','011','991212475','1993-10-25','M',3500.55);
 			`,
 		},
 		{
@@ -254,7 +256,8 @@ var (
 				(5,'Do Bem','Água de Coco Do Bem 1 L Tetra Pak',7.99,1,0,'https://cdn.shopify.com/s/files/1/0010/3150/3987/products/Suco_Do_Bem_Agua_de_Coco_1L_Tetra_Pak_2x_6f937dbb-3b6d-48ea-8c2f-42e93a86f3dd.png?v=1567752696?nocache=0.01789523325641751'),
 				(6,'Do Bem','Suco Do Bem Uva Integral 1 L Vidro',9.99,5,0,'https://cdn.shopify.com/s/files/1/0010/3150/3987/products/Suco_Do_Bem_Uva_Integral_1_L_Garrafa_vidro_2x_28855c5a-2691-42ab-aff0-7bec921814b5.png?v=1567752751?nocache=0.2591075763069701'),
 				(7,'X-tudo','1 Carne, Bacon, Alface, Tomate, Queijo e Cheddar',11.99,3,0,'https://img.olx.com.br/images/93/938011001780366.jpg'),
-				(8,'Brigadeiro','',3.99,4,0,'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Brigadeiro.jpg/1200px-Brigadeiro.jpg');
+				(8,'Brigadeiro','',3.99,4,0,'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Brigadeiro.jpg/1200px-Brigadeiro.jpg'),
+				(9,'Antarctica 600ml','Cerveja Antarctica garrafa de 600 ml',10.00,2,18,'https://geekpublicitario.com.br/wp-content/uploads/2018/03/novas-embalagens-cerveja-antarctica-pinguins-rotulos.jpg');
 			`,
 		},
 		{
@@ -262,15 +265,51 @@ var (
 			Description: "Inserting data on table tab_company",
 			Script: `
 				INSERT INTO tab_company 
-					(id,name,email,country_code,area_code,phone_number,document_number,business_id,street,street_number,complement,zip_code,neighborhood,city,federative_unit)
+					(id,name,email,description,country_code,area_code,phone_number,document_number,business_id,street,street_number,complement,zip_code,neighborhood,city,federative_unit)
 				VALUES
-				(1,'TAJ BAR','ambev@ambev.com','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1824','Empresa Ambev',02701-000,'Vila Albertina','São Paulo','SP'),
-				(2,'TAJ RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1724','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(3,'TAJ BAR E RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',3,'Av. Otaviano Alves de Lima','1625','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(4,'TAJ BALADA','ambev@ambev.com','55','11','48732123','27281922000170',4,'Av. Otaviano Alves de Lima','1323','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(5,'TAJ LANCHONETE','ambev@ambev.com','55','11','48732123','27281922000170',5,'Av. Otaviano Alves de Lima','1854','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(6,'AMBEV BAR','ambev@ambev.com','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1884','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(7,'AMBEV RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1814','',02701-000,'Vila Albertina','São Paulo','SP');
+				(1,'TAJ BAR','ambev@ambev.com','Bar familiar','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1824','Empresa Ambev',02701-000,'Vila Albertina','São Paulo','SP'),
+				(2,'TAJ RESTAURANTE','ambev@ambev.com','','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1724','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(3,'TAJ BAR E RESTAURANTE','ambev@ambev.com','','55','11','48732123','27281922000170',3,'Av. Otaviano Alves de Lima','1625','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(4,'TAJ BALADA','ambev@ambev.com','A melhor balada de São Paulo','55','11','48732123','27281922000170',4,'Av. Otaviano Alves de Lima','1323','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(5,'TAJ LANCHONETE','ambev@ambev.com','','55','11','48732123','27281922000170',5,'Av. Otaviano Alves de Lima','1854','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(6,'AMBEV BAR','ambev@ambev.com','','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1884','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(7,'AMBEV RESTAURANTE','ambev@ambev.com','Eleito a melhor comida da região','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1814','',02701-000,'Vila Albertina','São Paulo','SP');
+			`,
+		},
+		{
+			Version:     14,
+			Description: "Inserting data on table tab_order",
+			Script: `
+				INSERT INTO tab_order 
+					(id,user_id,company_id,observation,accept_tip,total_tip,total_price)
+				VALUES
+				(1,1,1,"Cerveja bem gelada por favor",1,2.04,20.35),
+				(2,1,1,"",1,0.60,5.97);
+			`,
+		},
+		{
+			Version:     15,
+			Description: "Inserting data on table tab_order_product",
+			Script: `
+				INSERT INTO tab_order_product 
+					(id,order_id,product_id,quantity)
+				VALUES
+				(1,1,1,2),
+				(2,1,3,2),
+				(3,1,7,1),
+				(4,2,1,2),
+				(5,2,5,1);
+			`,
+		},
+		{
+			Version:     16,
+			Description: "Inserting data on table tab_rating",
+			Script: `
+				INSERT INTO tab_rating 
+					(id,user_id,company_id,total_rating,customer_service,company_clean,ice_beer,good_food,would_go_back)
+				VALUES
+				(1,1,1,4.2,4,3,5,4,5),
+				(2,2,1,4.4,4,4,5,4,5);
 			`,
 		},
 	}

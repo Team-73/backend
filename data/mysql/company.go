@@ -25,6 +25,7 @@ const queryCompanySelectBase = `
 					SELECT 	c.id,
 									c.name,
 									c.email,
+									c.description,
 									c.country_code,
 									c.area_code,
 									c.phone_number,
@@ -47,9 +48,9 @@ const queryCompanySelectBase = `
 					FROM 		tab_company 		c 
 					`
 
-func (s *companyRepo) parseCompanySet(rows *sql.Rows) (companies []entity.Company, err error) {
+func (s *companyRepo) parseCompanySet(rows *sql.Rows) (companies []entity.CompanyDetail, err error) {
 	for rows.Next() {
-		company := entity.Company{}
+		company := entity.CompanyDetail{}
 		company, err = s.parseCompany(rows)
 		if err != nil {
 			return companies, err
@@ -60,12 +61,13 @@ func (s *companyRepo) parseCompanySet(rows *sql.Rows) (companies []entity.Compan
 	return companies, nil
 }
 
-func (s *companyRepo) parseCompany(row scanner) (company entity.Company, err error) {
+func (s *companyRepo) parseCompany(row scanner) (company entity.CompanyDetail, err error) {
 
 	err = row.Scan(
 		&company.ID,
 		&company.Name,
 		&company.Email,
+		&company.Description,
 		&company.CountryCode,
 		&company.AreaCode,
 		&company.PhoneNumber,
@@ -94,40 +96,73 @@ func (s *companyRepo) parseCompany(row scanner) (company entity.Company, err err
 }
 
 //GetCompanies - return a list of companies
-func (s *companyRepo) GetCompanies() (*[]entity.Company, *resterrors.RestErr) {
+func (s *companyRepo) GetCompanies() ([]entity.Companies, *resterrors.RestErr) {
 
-	query := queryCompanySelectBase
+	query := `
+		SELECT 	
+			c.id,
+			c.name,
+			IFNULL(SUM(r.customer_service + r.company_clean + r.ice_beer + r.good_food + would_go_back), 0) AS total_rating,
+			COUNT(r.id)											AS rating_quantity,
+			c.street,
+			c.street_number,
+			c.city,
+			c.federative_unit
 
+		FROM 				tab_company 					c
+		
+		LEFT JOIN 	tab_rating						r
+				ON 			r.company_id					= c.id
+
+		GROUP BY 
+			c.id,
+			c.name,
+			c.street,
+			c.street_number,
+			c.city,
+			c.federative_unit;
+	`
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		errorCode := "Error 0001: "
-		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetCompanyByID", errorCode), err)
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetCompanies", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 	defer stmt.Close()
 
-	var companies []entity.Company
-
 	rows, err := stmt.Query()
 	if err != nil {
-		errorCode := "Error 0002: "
-		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetCompanys", errorCode), err)
+		errorCode := "Error 0004: "
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetCompanies", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
-	defer rows.Close()
 
-	companies, err = s.parseCompanySet(rows)
-	if err != nil {
-		errorCode := "Error 0003: "
-		log.Println(fmt.Sprintf("%sError when trying to parse result in parseCompanySet", errorCode), err)
-		return nil, mysqlutils.HandleMySQLError(errorCode, err)
+	var companies []entity.Companies
+	var company entity.Companies
+	for rows.Next() {
+		err = rows.Scan(
+			&company.CompanyID,
+			&company.CompanyName,
+			&company.TotalRating,
+			&company.RatingQuantity,
+			&company.Street,
+			&company.Number,
+			&company.City,
+			&company.FederativeUnit,
+		)
+		if err != nil {
+			errorCode := "Error 0005: "
+			log.Println(fmt.Sprintf("%sError when trying to execute Query in GetCompanies", errorCode), err)
+			return nil, mysqlutils.HandleMySQLError(errorCode, err)
+		}
+		companies = append(companies, company)
 	}
 
-	return &companies, nil
+	return companies, nil
 }
 
 //GetCompanyByID - get a company by ID
-func (s *companyRepo) GetCompanyByID(id int64) (*entity.Company, *resterrors.RestErr) {
+func (s *companyRepo) GetCompanyByID(id int64) (*entity.CompanyDetail, *resterrors.RestErr) {
 
 	query := queryCompanySelectBase + `
 		WHERE 	c.id 		= ?;`
@@ -140,7 +175,7 @@ func (s *companyRepo) GetCompanyByID(id int64) (*entity.Company, *resterrors.Res
 	}
 	defer stmt.Close()
 
-	var company entity.Company
+	var company entity.CompanyDetail
 
 	result := stmt.QueryRow(id)
 	company, err = s.parseCompany(result)
@@ -154,12 +189,13 @@ func (s *companyRepo) GetCompanyByID(id int64) (*entity.Company, *resterrors.Res
 }
 
 // Create - to create a company on database
-func (s *companyRepo) Create(company entity.Company) (int64, *resterrors.RestErr) {
+func (s *companyRepo) Create(company entity.CompanyDetail) (int64, *resterrors.RestErr) {
 
 	query := `
 		INSERT INTO tab_company (
 			name,
 			email,
+			description,
 			country_code,
 			area_code,
 			phone_number,
@@ -178,7 +214,7 @@ func (s *companyRepo) Create(company entity.Company) (int64, *resterrors.RestErr
 			facebook_url,
 			linkedin_url,
 			twitter_url) VALUES	
-		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 		`
 
 	stmt, err := s.db.Prepare(query)
@@ -227,12 +263,13 @@ func (s *companyRepo) Create(company entity.Company) (int64, *resterrors.RestErr
 }
 
 // Update - to update a company on database
-func (s *companyRepo) Update(company entity.Company) (*entity.Company, *resterrors.RestErr) {
+func (s *companyRepo) Update(company entity.CompanyDetail) (*entity.CompanyDetail, *resterrors.RestErr) {
 
 	query := `
 		UPDATE tab_company
 			SET	name 					= ?,
 					email					= ?,
+					description		= ?,
 					country_code	= ?,
 					area_code			= ?,
 					phone_number	= ?,
@@ -252,6 +289,7 @@ func (s *companyRepo) Update(company entity.Company) (*entity.Company, *resterro
 	_, err = stmt.Exec(
 		company.Name,
 		company.Email,
+		company.Description,
 		company.CountryCode,
 		company.AreaCode,
 		company.PhoneNumber,

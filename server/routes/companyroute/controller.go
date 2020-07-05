@@ -78,7 +78,7 @@ func (s *Controller) handleGetProductsByCompanyID(c *gin.Context) {
 // handleCreateCompany to handle a create company request
 func (s *Controller) handleCreateCompany(c *gin.Context) {
 
-	var company entity.Company
+	var company entity.CompanyDetail
 
 	err := c.ShouldBindJSON(&company)
 	if err != nil {
@@ -99,7 +99,7 @@ func (s *Controller) handleCreateCompany(c *gin.Context) {
 
 // handleUpdateCompany to handle a update company request
 func (s *Controller) handleUpdateCompany(c *gin.Context) {
-	var company entity.Company
+	var company entity.CompanyDetail
 
 	err := c.ShouldBindJSON(&company)
 	if err != nil {

@@ -25,9 +25,9 @@ type User struct {
 // Validate to validate a user data
 func (user *User) Validate() *resterrors.RestErr {
 
-	user.Name = strings.TrimSpace(user.Name)
-	if user.Name == "" {
-		return resterrors.NewBadRequestError("Name is invalid")
+	user.Birthdate = strings.TrimSpace(user.Name)
+	if user.Birthdate == "" {
+		user.Birthdate = "1993-10-25"
 	}
 
 	user.Email = strings.TrimSpace(strings.ToLower(user.Email))
@@ -35,7 +35,7 @@ func (user *User) Validate() *resterrors.RestErr {
 		return resterrors.NewBadRequestError("Email address is invalid")
 	}
 
-	user.CountryCode = strings.TrimSpace(user.CountryCode)
+	/* user.CountryCode = strings.TrimSpace(user.CountryCode)
 	if user.CountryCode == "" {
 		return resterrors.NewBadRequestError("Country code is invalid")
 	}
@@ -48,7 +48,7 @@ func (user *User) Validate() *resterrors.RestErr {
 	user.PhoneNumber = strings.TrimSpace(user.PhoneNumber)
 	if user.PhoneNumber == "" {
 		return resterrors.NewBadRequestError("Phone number is invalid")
-	}
+	} */
 
 	user.Password = strings.TrimSpace(user.Password)
 	err := user.validadePassword()
