@@ -50,7 +50,6 @@ func (s *companyService) GetCompanyUserRating(companyID, userID int64) (*entity.
 	}
 
 	return companyRatingResult, nil
-
 }
 
 func (s *companyService) CreateCompany(company entity.Company) (int64, *resterrors.RestErr) {
@@ -109,10 +108,12 @@ func (s *companyService) UpdateCompanyRating(companyRating entity.CompanyRating)
 
 	companyRatingResult, err := s.GetCompanyUserRating(companyRating.CompanyID, companyRating.UserID)
 	if err != nil {
-		return nil, err
+		if err.Message != "Error 0005: No records find with the parameters" {
+			return nil, err
+		}
 	}
 
-	if companyRatingResult.ID > 0 {
+	if companyRatingResult != nil {
 		updatedCompanyRating, err := s.svc.db.Company().UpdateCompanyRating(companyRating)
 		if err != nil {
 			return nil, err

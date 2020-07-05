@@ -153,10 +153,10 @@ func (s *companyRepo) GetCompanyByID(id int64) (*entity.Company, *resterrors.Res
 	return &company, nil
 }
 
-// GetUserCompanyRating - to update a company on database
-func (s *companyRepo) GetUserCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr) {
+// GetCompanyUserRating - to get a company user rating on database
+func (s *companyRepo) GetCompanyUserRating(companyID, userID int64) (*entity.CompanyRating, *resterrors.RestErr) {
 
-	var rating *entity.CompanyRating
+	var rating entity.CompanyRating
 
 	query := `
 		SELECT 
@@ -183,7 +183,7 @@ func (s *companyRepo) GetUserCompanyRating(companyRating entity.CompanyRating) (
 	}
 	defer stmt.Close()
 
-	row := stmt.QueryRow(companyRating.UserID, companyRating.CompanyID)
+	row := stmt.QueryRow(userID, companyID)
 
 	err = row.Scan(
 		&rating.ID,
@@ -196,13 +196,14 @@ func (s *companyRepo) GetUserCompanyRating(companyRating entity.CompanyRating) (
 		&rating.WouldGoBack,
 		&rating.CreatedAt,
 	)
+
 	if err != nil {
 		errorCode := "Error 0005: "
 		log.Println(fmt.Sprintf("%sError when trying to execute Query in GetUserCompanyRating", errorCode), err)
 		return nil, mysqlutils.HandleMySQLError(errorCode, err)
 	}
 
-	return rating, nil
+	return &rating, nil
 }
 
 // Create - to create a company on database

@@ -22,13 +22,13 @@ type DBManager struct {
 func Instance() (contract.RepoManager, error) {
 	cfg := config.GetDBConfig()
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8",
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8",
 		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName,
 	)
 
 	log.Println("Connecting to database...")
 
-	db, err := sql.Open("mysql", dataSourceName)
+	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		return nil, err
 	}

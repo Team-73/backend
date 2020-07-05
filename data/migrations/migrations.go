@@ -185,12 +185,12 @@ var (
 				UNIQUE INDEX ID_UNIQUE (id ASC),
 				INDEX fk_tab_company_rating_tab_user_idx (id ASC),
 				INDEX fk_tab_company_rating_tab_company_idx (id ASC),
-				CONSTRAINT fk_user
+				CONSTRAINT fk_company_rating_user
 					FOREIGN KEY (user_id)
 					REFERENCES chefia_db.tab_user (id)
 					ON DELETE NO ACTION
 					ON UPDATE NO ACTION,
-				CONSTRAINT fk_company
+				CONSTRAINT fk_company_rating_company
 					FOREIGN KEY (company_id)
 					REFERENCES chefia_db.tab_company (id)
 					ON DELETE NO ACTION

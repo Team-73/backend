@@ -8,6 +8,7 @@ import (
 
 	"github.com/Team-73/backend/domain/contract"
 	"github.com/Team-73/backend/domain/entity"
+	"github.com/Team-73/backend/server/viewmodel"
 	"github.com/diegoclair/go_utils-lib/resterrors"
 	"github.com/gin-gonic/gin"
 )
@@ -35,21 +36,10 @@ func NewController(companyService contract.CompanyService) *Controller {
 // handleGetCompanyByID to handle a get company request
 func (s *Controller) handleGetCompanyByID(c *gin.Context) {
 
-	var companyID int64 = 0
-	var err error
-
-	company := c.Query("company")
-	if company != "" {
-
-		companyID, err = strconv.ParseInt(c.Query("company"), 10, 64)
-		if err != nil {
-			log.Println(err)
-			restErr := resterrors.NewBadRequestError("Unable to parse company value")
-			c.JSON(restErr.StatusCode, restErr)
-			return
-		}
-	} else {
-		companyID = 0
+	companyID, errID := s.getIDParameter(c.Param("id"))
+	if errID != nil {
+		c.JSON(errID.StatusCode, errID)
+		return
 	}
 
 	result, getErr := s.companyService.GetCompanyByID(companyID)
@@ -178,7 +168,7 @@ func (s *Controller) handleUpdateCompanyRating(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, resCompanyRating)
+	c.JSON(http.StatusOK, companyStructToViewmodelResponse(*resCompanyRating))
 }
 
 // handleDeleteCompany to handle a delete company request
@@ -206,4 +196,17 @@ func (s *Controller) getIDParameter(companyParamID string) (int64, *resterrors.R
 	}
 
 	return companyID, nil
+}
+
+func companyStructToViewmodelResponse(companyRating entity.CompanyRating) (vmCompanyRating viewmodel.CompanyRating) {
+
+	vmCompanyRating.UserID = companyRating.UserID
+	vmCompanyRating.CompanyID = companyRating.CompanyID
+	vmCompanyRating.CustomerService = companyRating.CustomerService
+	vmCompanyRating.CompanyClean = companyRating.CompanyClean
+	vmCompanyRating.IceBeer = companyRating.IceBeer
+	vmCompanyRating.GoodFood = companyRating.GoodFood
+	vmCompanyRating.WouldGoBack = companyRating.WouldGoBack
+
+	return vmCompanyRating
 }
