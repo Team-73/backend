@@ -54,7 +54,7 @@ func (s *orderService) GetOrderByUserID(userID int64) ([]entity.Order, *resterro
 	}
 
 	for i := 0; i < len(orders); i++ {
-
+		orders[i].Products, err = s.svc.db.Order().GetProductsByOrderID(userID)
 	}
 
 	return orders, nil

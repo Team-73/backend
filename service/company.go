@@ -94,6 +94,30 @@ func (s *companyService) UpdateCompany(company entity.Company) (*entity.Company,
 	return updatedCompany, nil
 }
 
+func (s *companyService) UpdateCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr) {
+
+	companyRatingResult, err := s.svc.db.Company().GetUserCompanyRating(companyRating)
+	if err != nil {
+		return nil, err
+	}
+
+	if companyRatingResult.ID > 0 {
+		updatedCompanyRating, err := s.svc.db.Company().UpdateCompanyRating(companyRating)
+		if err != nil {
+			return nil, err
+		}
+
+		return updatedCompanyRating, nil
+	}
+
+	createdCompanyRating, err := s.svc.db.Company().CreateCompanyRating(companyRating)
+	if err != nil {
+		return nil, err
+	}
+
+	return createdCompanyRating, nil
+}
+
 func (s *companyService) DeleteCompany(companyID int64) *resterrors.RestErr {
 	return s.svc.db.Company().Delete(companyID)
 }

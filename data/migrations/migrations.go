@@ -119,6 +119,7 @@ var (
 				id INT NOT NULL AUTO_INCREMENT,
 				user_id INT(11) NOT NULL,
 				company_id INT(11) NULL,
+				rating DECIMAL(1,1) NOT NULL DEFAULT '0.00',
 				accept_tip TINYINT(1) NOT NULL,
 				total_tip DECIMAL(7,2) NOT NULL DEFAULT '0.00',
 				total_price DECIMAL(7,2) NOT NULL DEFAULT '0.00',
@@ -166,9 +167,39 @@ var (
 					ON UPDATE NO ACTION
 			) ENGINE=InnoDB CHARACTER SET=utf8;`,
 		},
-		// ============================================== ADD FAKE DATA ==============================================
 		{
 			Version:     8,
+			Description: "Creating table tab_company_rating",
+			Script: `CREATE TABLE IF NOT EXISTS tab_company_rating (
+				id INT NOT NULL AUTO_INCREMENT,
+				user_id INT(11) NULL,
+				company_id INT(11) NULL,
+				customer_service INT(11) NULL,
+				company_clean INT(11) NULL,
+				ice_beer INT(11) NULL,
+				good_food INT(11) NULL,
+				would_go_back INT(11) NULL,
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+				PRIMARY KEY (id),
+				UNIQUE INDEX ID_UNIQUE (id ASC),
+				INDEX fk_tab_company_rating_tab_user_idx (id ASC),
+				INDEX fk_tab_company_rating_tab_company_idx (id ASC),
+				CONSTRAINT fk_user
+					FOREIGN KEY (user_id)
+					REFERENCES chefia_db.tab_user (id)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_company
+					FOREIGN KEY (company_id)
+					REFERENCES chefia_db.tab_company (id)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION
+			) ENGINE=InnoDB CHARACTER SET=utf8;`,
+		},
+		// ============================================== ADD FAKE DATA ==============================================
+		{
+			Version:     9,
 			Description: "Inserting data on table tab_user",
 			Script: `
 				INSERT INTO tab_user 
@@ -182,7 +213,7 @@ var (
 			`,
 		},
 		{
-			Version:     9,
+			Version:     10,
 			Description: "Inserting data on table tab_product_category",
 			Script: `
 				INSERT INTO tab_product_category 
@@ -196,7 +227,7 @@ var (
 			`,
 		},
 		{
-			Version:     10,
+			Version:     11,
 			Description: "Inserting data on table tab_company_business",
 			Script: `
 				INSERT INTO tab_company_business 
@@ -210,7 +241,7 @@ var (
 			`,
 		},
 		{
-			Version:     11,
+			Version:     12,
 			Description: "Inserting data on table tab_product",
 			Script: `
 				INSERT INTO tab_product 
@@ -227,19 +258,19 @@ var (
 			`,
 		},
 		{
-			Version:     12,
+			Version:     13,
 			Description: "Inserting data on table tab_company",
 			Script: `
 				INSERT INTO tab_company 
 					(id,name,email,country_code,area_code,phone_number,document_number,business_id,street,street_number,complement,zip_code,neighborhood,city,federative_unit)
 				VALUES
-				(id,'TAJ BAR','ambev@ambev.com','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1824','Empresa Ambev',02701-000,'Vila Albertina','São Paulo','SP'),
-				(id,'TAJ RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1724','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(id,'TAJ BAR E RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',3,'Av. Otaviano Alves de Lima','1625','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(id,'TAJ BALADA','ambev@ambev.com','55','11','48732123','27281922000170',4,'Av. Otaviano Alves de Lima','1323','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(id,'TAJ LANCHONETE','ambev@ambev.com','55','11','48732123','27281922000170',5,'Av. Otaviano Alves de Lima','1854','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(id,'AMBEV BAR','ambev@ambev.com','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1884','',02701-000,'Vila Albertina','São Paulo','SP'),
-				(id,'AMBEV RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1814','',02701-000,'Vila Albertina','São Paulo','SP');
+				(1,'TAJ BAR','ambev@ambev.com','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1824','Empresa Ambev',02701-000,'Vila Albertina','São Paulo','SP'),
+				(2,'TAJ RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1724','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(3,'TAJ BAR E RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',3,'Av. Otaviano Alves de Lima','1625','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(4,'TAJ BALADA','ambev@ambev.com','55','11','48732123','27281922000170',4,'Av. Otaviano Alves de Lima','1323','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(5,'TAJ LANCHONETE','ambev@ambev.com','55','11','48732123','27281922000170',5,'Av. Otaviano Alves de Lima','1854','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(6,'AMBEV BAR','ambev@ambev.com','55','11','48732123','27281922000170',1,'Av. Otaviano Alves de Lima','1884','',02701-000,'Vila Albertina','São Paulo','SP'),
+				(7,'AMBEV RESTAURANTE','ambev@ambev.com','55','11','48732123','27281922000170',2,'Av. Otaviano Alves de Lima','1814','',02701-000,'Vila Albertina','São Paulo','SP');
 			`,
 		},
 	}

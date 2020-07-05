@@ -52,6 +52,7 @@ type CompanyService interface {
 	GetCompanyByID(userID int64) (*entity.Company, *resterrors.RestErr)
 	CreateCompany(entity.Company) (int64, *resterrors.RestErr)
 	UpdateCompany(entity.Company) (*entity.Company, *resterrors.RestErr)
+	UpdateCompanyRating(entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)
 	DeleteCompany(userID int64) *resterrors.RestErr
 }
 

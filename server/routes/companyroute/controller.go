@@ -130,6 +130,27 @@ func (s *Controller) handleUpdateCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, resCompany)
 }
 
+// handleUpdateCompanyRating to handle a update company request
+func (s *Controller) handleUpdateCompanyRating(c *gin.Context) {
+	var companyRating entity.CompanyRating
+
+	err := c.ShouldBindJSON(&companyRating)
+	if err != nil {
+		log.Println(err)
+		restErr := resterrors.NewBadRequestError("Invalid json body")
+		c.JSON(restErr.StatusCode, restErr)
+		return
+	}
+
+	resCompanyRating, updateErr := s.companyService.UpdateCompanyRating(companyRating)
+	if updateErr != nil {
+		c.JSON(updateErr.StatusCode, updateErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, resCompanyRating)
+}
+
 // handleDeleteCompany to handle a delete company request
 func (s *Controller) handleDeleteCompany(c *gin.Context) {
 
