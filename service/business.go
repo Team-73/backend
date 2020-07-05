@@ -57,8 +57,6 @@ func (s *businessService) CreateBusiness(business entity.Business) (int64, *rest
 
 func (s *businessService) UpdateBusiness(business entity.Business) (*entity.Business, *resterrors.RestErr) {
 
-	// To not update with "" others fields that we don't send in the request and to return  this others fields,
-	// like the created_at in the response, if we don't do this, the field created_at, will be show with the value = ""
 	currentBusiness, err := s.GetBusinessByID(business.ID)
 	if err != nil {
 		return nil, err

@@ -57,8 +57,6 @@ func (s *categoryService) CreateCategory(category entity.Category) (int64, *rest
 
 func (s *categoryService) UpdateCategory(category entity.Category) (*entity.Category, *resterrors.RestErr) {
 
-	// To not update with "" others fields that we don't send in the request and to return  this others fields,
-	// like the created_at in the response, if we don't do this, the field created_at, will be show with the value = ""
 	currentCategory, err := s.GetCategoryByID(category.ID)
 	if err != nil {
 		return nil, err
