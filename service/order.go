@@ -46,16 +46,16 @@ func (s *orderService) CreateOrder(order entity.Order) (int64, *resterrors.RestE
 	return newOrderID, nil
 }
 
-func (s *orderService) GetOrderByUserID(userID int64) (*[]entity.Order, *resterrors.RestErr) {
+func (s *orderService) GetOrdersByUserID(userID int64) (*[]entity.Order, *resterrors.RestErr) {
 
-	orders, err := s.svc.db.Order().GetOrderByUserID(userID)
+	/*orders, err := s.svc.db.Order().GetOrdersByUserID(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	/* for i := 0; i < len(orders); i++ {
+	 for i := 0; i < len(orders); i++ {
 		orders[i].Products, err = s.svc.db.Order().GetProductsByOrderID(userID)
 	} */
 
-	return &orders, nil
+	return nil, nil
 }

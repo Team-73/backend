@@ -50,15 +50,19 @@ type BusinessService interface {
 type CompanyService interface {
 	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
 	GetCompanyByID(userID int64) (*entity.Company, *resterrors.RestErr)
-	GetCompanyUserRating(companyID, userID int64) (*entity.CompanyRating, *resterrors.RestErr)
 	CreateCompany(entity.Company) (int64, *resterrors.RestErr)
 	UpdateCompany(entity.Company) (*entity.Company, *resterrors.RestErr)
-	UpdateCompanyRating(entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)
 	DeleteCompany(userID int64) *resterrors.RestErr
 }
 
 // OrderService holds a user service operations
 type OrderService interface {
 	CreateOrder(entity.Order) (int64, *resterrors.RestErr)
-	GetOrderByUserID(userID int64) (*[]entity.Order, *resterrors.RestErr)
+	GetOrdersByUserID(userID int64) (*[]entity.Order, *resterrors.RestErr)
+}
+
+// RatingService holds a user service operations
+type RatingService interface {
+	GetCompanyUserRating(companyID, userID int64) (*entity.Rating, *resterrors.RestErr)
+	UpdateRating(entity.Rating) (*entity.Rating, *resterrors.RestErr)
 }

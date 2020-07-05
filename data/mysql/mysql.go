@@ -94,3 +94,8 @@ func (c *DBManager) User() contract.UserRepo {
 func (c *DBManager) Order() contract.OrderRepo {
 	return newOrderRepo(c.db)
 }
+
+//Rating returns a session to use mysql querys
+func (c *DBManager) Rating() contract.RatingRepo {
+	return newRatingRepo(c.db)
+}

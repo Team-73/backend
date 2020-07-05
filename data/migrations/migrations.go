@@ -119,7 +119,6 @@ var (
 				id INT NOT NULL AUTO_INCREMENT,
 				user_id INT(11) NOT NULL,
 				company_id INT(11) NULL,
-				rating DECIMAL(1,1) NOT NULL DEFAULT '0.00',
 				accept_tip TINYINT(1) NOT NULL,
 				total_tip DECIMAL(7,2) NOT NULL DEFAULT '0.00',
 				total_price DECIMAL(7,2) NOT NULL DEFAULT '0.00',
@@ -179,6 +178,7 @@ var (
 				ice_beer INT(11) NULL,
 				good_food INT(11) NULL,
 				would_go_back INT(11) NULL,
+				total_rating DECIMAL(2,1) NOT NULL DEFAULT '0.0',
 				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 				PRIMARY KEY (id),

@@ -23,11 +23,8 @@ func (r *Router) RegisterRoutes() {
 
 	r.router.GET("/companies", r.ctrl.handleGetCompanies)
 	r.router.GET("/company/:id", r.ctrl.handleGetCompanyByID)
+	r.router.GET("/company/:id/products", r.ctrl.handleGetProductsByCompanyID)
 	r.router.POST("/company", r.ctrl.handleCreateCompany)
 	r.router.PUT("/company/:id", r.ctrl.handleUpdateCompany)
 	r.router.DELETE("/company/:id", r.ctrl.handleDeleteCompany)
-
-	r.router.GET("/rating/:company_id/:user_id", r.ctrl.handleGetCompanyUserRating)
-	r.router.PUT("/rating", r.ctrl.handleUpdateCompanyRating)
-
 }

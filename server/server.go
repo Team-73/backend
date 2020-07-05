@@ -7,6 +7,7 @@ import (
 	"github.com/Team-73/backend/server/routes/orderroute"
 	"github.com/Team-73/backend/server/routes/pingroute"
 	"github.com/Team-73/backend/server/routes/productroute"
+	"github.com/Team-73/backend/server/routes/ratingroute"
 	"github.com/Team-73/backend/server/routes/userroute"
 	"github.com/Team-73/backend/service"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,7 @@ type controller struct {
 	categoryController *categoryroute.Controller
 	businessController *businessroute.Controller
 	companyController  *companyroute.Controller
+	ratingController   *ratingroute.Controller
 	orderController    *orderroute.Controller
 }
 
@@ -34,6 +36,7 @@ func InitServer(svc *service.Service) *gin.Engine {
 		categoryController: categoryroute.NewController(svm.CategoryService(svc)),
 		businessController: businessroute.NewController(svm.BusinessService(svc)),
 		companyController:  companyroute.NewController(svm.CompanyService(svc)),
+		ratingController:   ratingroute.NewController(svm.RatingService(svc)),
 		orderController:    orderroute.NewController(svm.OrderService(svc)),
 	})
 }
@@ -47,6 +50,7 @@ func setupRoutes(srv *gin.Engine, s *controller) *gin.Engine {
 	categoryroute.NewRoute(s.categoryController, srv).RegisterRoutes()
 	businessroute.NewRoute(s.businessController, srv).RegisterRoutes()
 	companyroute.NewRoute(s.companyController, srv).RegisterRoutes()
+	ratingroute.NewRoute(s.ratingController, srv).RegisterRoutes()
 	orderroute.NewRoute(s.orderController, srv).RegisterRoutes()
 
 	return srv

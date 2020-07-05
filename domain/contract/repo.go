@@ -14,6 +14,7 @@ type RepoManager interface {
 	Product() ProductRepo
 	User() UserRepo
 	Order() OrderRepo
+	Rating() RatingRepo
 }
 
 // PingRepo defines the data set for a ping
@@ -41,10 +42,7 @@ type CategoryRepo interface {
 type CompanyRepo interface {
 	GetCompanies() (*[]entity.Company, *resterrors.RestErr)
 	GetCompanyByID(companyID int64) (*entity.Company, *resterrors.RestErr)
-	GetCompanyUserRating(companyID, userID int64) (*entity.CompanyRating, *resterrors.RestErr)
 	Create(entity.Company) (int64, *resterrors.RestErr)
-	CreateCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)
-	UpdateCompanyRating(companyRating entity.CompanyRating) (*entity.CompanyRating, *resterrors.RestErr)
 	Update(entity.Company) (*entity.Company, *resterrors.RestErr)
 	Delete(companyID int64) *resterrors.RestErr
 }
@@ -73,5 +71,12 @@ type OrderRepo interface {
 	CreateOrder(entity.Order) (int64, *resterrors.RestErr)
 	CreateOrderProductAndReturnProductPrice(orderID int64, oderProduct entity.OrderProduct) (float64, *resterrors.RestErr)
 	UpdateOrder(orderID int64, order entity.Order) *resterrors.RestErr
-	GetOrderByUserID(userID int64) ([]entity.Order, *resterrors.RestErr)
+	//GetOrdersByUserID(userID int64) ([]entity.Order, *resterrors.RestErr)
+}
+
+// RatingRepo defines the data set for a category
+type RatingRepo interface {
+	GetCompanyUserRating(companyID, userID int64) (*entity.Rating, *resterrors.RestErr)
+	CreateRating(rating entity.Rating) (*entity.Rating, *resterrors.RestErr)
+	UpdateRating(rating entity.Rating) (*entity.Rating, *resterrors.RestErr)
 }

@@ -51,36 +51,6 @@ func (s *Controller) handleGetCompanyByID(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// handleGetCompanyUserRating to handle a get company request
-func (s *Controller) handleGetCompanyUserRating(c *gin.Context) {
-
-	companyID, errID := s.getIDParameter(c.Param("company_id"))
-	if errID != nil {
-		c.JSON(errID.StatusCode, errID)
-		return
-	}
-
-	userID, errID := s.getIDParameter(c.Param("user_id"))
-	if errID != nil {
-		c.JSON(errID.StatusCode, errID)
-		return
-	}
-
-	if userID == 0 || companyID == 0 {
-		restErr := resterrors.NewBadRequestError("The params company_id and user_id need to be sent")
-		c.JSON(restErr.StatusCode, restErr)
-		return
-	}
-
-	result, getErr := s.companyService.GetCompanyUserRating(companyID, userID)
-	if getErr != nil {
-		c.JSON(getErr.StatusCode, getErr)
-		return
-	}
-
-	c.JSON(http.StatusOK, result)
-}
-
 // handleGetCompanies to handle a get company request
 func (s *Controller) handleGetCompanies(c *gin.Context) {
 
@@ -97,6 +67,12 @@ func (s *Controller) handleGetCompanies(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
+
+// handleGetProductsByCompanyID to handle a get company request
+func (s *Controller) handleGetProductsByCompanyID(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{"Status": "Implement me"})
 }
 
 // handleCreateCompany to handle a create company request
@@ -150,27 +126,6 @@ func (s *Controller) handleUpdateCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, resCompany)
 }
 
-// handleUpdateCompanyRating to handle a update company request
-func (s *Controller) handleUpdateCompanyRating(c *gin.Context) {
-	var companyRating entity.CompanyRating
-
-	err := c.ShouldBindJSON(&companyRating)
-	if err != nil {
-		log.Println(err)
-		restErr := resterrors.NewBadRequestError("Invalid json body")
-		c.JSON(restErr.StatusCode, restErr)
-		return
-	}
-
-	resCompanyRating, updateErr := s.companyService.UpdateCompanyRating(companyRating)
-	if updateErr != nil {
-		c.JSON(updateErr.StatusCode, updateErr)
-		return
-	}
-
-	c.JSON(http.StatusOK, companyStructToViewmodelResponse(*resCompanyRating))
-}
-
 // handleDeleteCompany to handle a delete company request
 func (s *Controller) handleDeleteCompany(c *gin.Context) {
 
@@ -198,15 +153,15 @@ func (s *Controller) getIDParameter(companyParamID string) (int64, *resterrors.R
 	return companyID, nil
 }
 
-func companyStructToViewmodelResponse(companyRating entity.CompanyRating) (vmCompanyRating viewmodel.CompanyRating) {
+func companyStructToViewmodelResponse(rating entity.Rating) (vmRating viewmodel.Rating) {
 
-	vmCompanyRating.UserID = companyRating.UserID
-	vmCompanyRating.CompanyID = companyRating.CompanyID
-	vmCompanyRating.CustomerService = companyRating.CustomerService
-	vmCompanyRating.CompanyClean = companyRating.CompanyClean
-	vmCompanyRating.IceBeer = companyRating.IceBeer
-	vmCompanyRating.GoodFood = companyRating.GoodFood
-	vmCompanyRating.WouldGoBack = companyRating.WouldGoBack
+	vmRating.UserID = rating.UserID
+	vmRating.CompanyID = rating.CompanyID
+	vmRating.CustomerService = rating.CustomerService
+	vmRating.CompanyClean = rating.CompanyClean
+	vmRating.IceBeer = rating.IceBeer
+	vmRating.GoodFood = rating.GoodFood
+	vmRating.WouldGoBack = rating.WouldGoBack
 
-	return vmCompanyRating
+	return vmRating
 }

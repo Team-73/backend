@@ -189,27 +189,25 @@ func (s *orderRepo) UpdateOrder(orderID int64, order entity.Order) *resterrors.R
 	return nil
 }
 
-func (s *orderRepo) GetOrderByUserID(userID int64) ([]entity.Order, *resterrors.RestErr) {
+/* func (s *orderRepo) GetOrdersByUserID(userID int64) ([]entity.OrdersByUserID, *resterrors.RestErr) {
 
 	query := `
-		SELECT 
+		SELECT
 			o.id,
 			o.user_id,
 			o.company_id,
-			o.rating,
-			o.accept_tip,
 			o.total_tip,
 			o.total_price,
 			o.created_at
 
-		FROM tab_order o 
+		FROM tab_order o
 		WHERE o.user_id = ?;
 	`
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
 		errorCode := "Error 0004: "
-		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrderByUserID", errorCode), err)
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrdersByUserID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 	defer stmt.Close()
@@ -217,13 +215,13 @@ func (s *orderRepo) GetOrderByUserID(userID int64) ([]entity.Order, *resterrors.
 	rows, err := stmt.Query(userID)
 	if err != nil {
 		errorCode := "Error 0004: "
-		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrderByUserID", errorCode), err)
+		log.Println(fmt.Sprintf("%sError when trying to prepare the query statement in GetOrdersByUserID", errorCode), err)
 		return nil, resterrors.NewInternalServerError(fmt.Sprintf("%sDatabase error", errorCode))
 	}
 
-	var orders []entity.Order
+	var orders []entity.OrdersByUserID
 	for rows.Next() {
-		order := entity.Order{}
+		order := entity.OrdersByUserID{}
 		err = rows.Scan(
 			&order.ID,
 			&order.UserID,
@@ -236,7 +234,7 @@ func (s *orderRepo) GetOrderByUserID(userID int64) ([]entity.Order, *resterrors.
 		)
 		if err != nil {
 			errorCode := "Error 0005: "
-			log.Println(fmt.Sprintf("%sError when trying to execute Query in GetOrderByUserID", errorCode), err)
+			log.Println(fmt.Sprintf("%sError when trying to execute Query in GetOrdersByUserID", errorCode), err)
 			return nil, mysqlutils.HandleMySQLError(errorCode, err)
 		}
 		orders = append(orders, order)
@@ -244,3 +242,4 @@ func (s *orderRepo) GetOrderByUserID(userID int64) ([]entity.Order, *resterrors.
 
 	return orders, nil
 }
+*/
