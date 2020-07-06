@@ -1,4 +1,12 @@
-# Backend server to Ambev Project
+# Backend server to the ô Chefia Project
+
+## 📝 Project
+ô Chefia is a application to change the way the customer consumes at pub today.
+- You can pay your order directly in the app
+- Find the near pubs from you
+- Share bill's payment with friends
+- And still accumulate points to redeem prizes
+- Change the entire consumer experience for the better
 
 ## Description
 
@@ -6,6 +14,15 @@ This backend has the main responsabilities:
 
 * To do all interactions with databases
 * To connect with other APIS like Gr1d, Zenvia, Serasa and others
+
+## Technologies 
+
+* Language:
+  - [Golang](https://golang.org/)  
+
+* Database:
+  - MySQL  
+  <img src="./diagramDB/oChefiaDatabase.svg" style="margin-left:-50px; margin-bottom: -300px; margin-top: -20px">
 
 ## Start application
 ### Requirements:
