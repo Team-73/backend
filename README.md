@@ -1,4 +1,6 @@
-# Ô Chefia App
+<h1 align="center">
+    <img alt="NextLevelWeek" title="#NextLevelWeek" src=".github/logo.svg" width="250px" />
+</h1>
 
 ## 📝 Project
 Ô Chefia is a application to change the way the customer consumes at pub today.
@@ -8,6 +10,7 @@
 - And still accumulate points to redeem prizes
 - Change the entire consumer experience for the better
 
+[Demo video](https://www.youtube.com/watch?v=OWy9gkgBt7k&feature=youtu.be)
 ## Description
 
 This backend has the main responsabilities:  
