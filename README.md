@@ -27,12 +27,15 @@ This backend has the main responsabilities:
   - MySQL  
   <img src=".github/diagramDatabase.svg" >
 
-## Start application
-### Requirements:
-* To run this project you need to have the <b>docker</b> installed in your computer.  
-* To install docker, [click here](https://docs.docker.com/get-docker/)
+## ❗ Requirements
+To run this application you have to install (if you don't have already installed) the follow programs:
+* <b>In your computer</b>:
+   * Docker 🐳 [click here](https://docs.docker.com/get-docker/)
+<br>
 
-### Permissions first:  
+## ▶️ Start application
+
+#### Permissions first:  
 
 * For <b>Unix</b> enviroment, run the comand:  
 <b>```chmod +x .docker/entrypoint.sh```</b>  
@@ -40,7 +43,7 @@ This backend has the main responsabilities:
 * For <b>Windows</b> enviroment, run the comand:   
 <b>```dos2unix +x .docker/entrypoint.sh```</b>  
 
-### Start:
-* Now you can run:  <br>
+### 💻 Start:
+* Now, in your terminal, you can run:  <br>
 <b>```docker-compose up```</b>
 <br><br>
