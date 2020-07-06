@@ -18,7 +18,7 @@ This backend has the main responsabilities:
 * To do all interactions with databases
 * To connect with other APIS like Gr1d, Zenvia, Serasa and others
 
-## Technologies 
+## 💻 Technologies 
 
 * Language:
   - [Golang](https://golang.org/)  
@@ -43,7 +43,7 @@ To run this application you have to install (if you don't have already installed
 * For <b>Windows</b> enviroment, run the comand:   
 <b>```dos2unix +x .docker/entrypoint.sh```</b>  
 
-### 💻 Start:
+### Start:
 * Now, in your terminal, you can run:  <br>
 <b>```docker-compose up```</b>
 <br><br>
