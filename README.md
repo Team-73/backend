@@ -25,7 +25,7 @@ This backend has the main responsabilities:
 
 * Database:
   - MySQL  
-  <img src="./diagramDB/oChefiaDatabase.svg" style="margin-left:-50px; margin-bottom: -300px; margin-top: -20px">
+  <img src=".github/diagramDatabase.svg" >
 
 ## Start application
 ### Requirements:
