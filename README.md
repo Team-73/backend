@@ -1,7 +1,7 @@
-# Backend server to the ô Chefia Project
+# Ô Chefia App
 
 ## 📝 Project
-ô Chefia is a application to change the way the customer consumes at pub today.
+Ô Chefia is a application to change the way the customer consumes at pub today.
 - You can pay your order directly in the app
 - Find the near pubs from you
 - Share bill's payment with friends
