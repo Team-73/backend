@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img alt="NextLevelWeek" title="#NextLevelWeek" src=".github/logo.svg" width="250px" />
+    <img alt="ôChefia" title="#ôChefia" src=".github/logo.svg" width="250px" />
 </h1>
 
 ## 📝 Project
